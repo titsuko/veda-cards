@@ -1,14 +1,13 @@
 //
-//  SignUpView.swift
+//  SignInView.swift
 //  veda
 //
-//  Created by Евгений Петрукович on 1/23/26.
+//  Created by Евгений Петрукович on 1/24/26.
 //
 
 import SwiftUI
 
-struct SignUpView: View {
-    @State var name: String = ""
+struct SignInView: View {
     @State var email: String = ""
     @State var password: String = ""
     @State var isAgreed: Bool = false
@@ -21,7 +20,7 @@ struct SignUpView: View {
                 logo
                 VStack(spacing: 30) {
                     textField
-                    userAgreement
+                    Spacer()
                     button
                 }
                 .padding(.horizontal, 30)
@@ -54,33 +53,9 @@ struct SignUpView: View {
     @ViewBuilder
     private var textField: some View {
         VStack(spacing: 30) {
-            AppTextField(title: "", field: "Ваше имя", secure: false, text: $name)
             AppTextField(title: "Email", field: "Заполните поле", secure: false, text: $email)
             AppTextField(title: "Пароль", field: "Заполните поле", secure: true, text: $password)
         }
-    }
-    
-    @ViewBuilder
-    private var userAgreement: some View {
-        HStack(spacing: 15) {
-            Button(action: {isAgreed.toggle()}) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(.white)
-                        .frame(width: 20, height: 20)
-                    
-                    if isAgreed {
-                        Image(systemName: "checkmark")
-                            .foregroundStyle(.black)
-                            .bold()
-                    }
-                }
-                Text("Пользовательское соглашение")
-                    .foregroundStyle(.goldText)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 15)
     }
     
     @ViewBuilder
@@ -91,16 +66,17 @@ struct SignUpView: View {
                     .fill(.gold)
                     .frame(height: 45)
                 
-                Text("Создать аккаунт")
+                Text("Войти")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
             }
         }
         .padding(.horizontal, 40)
-        .padding(.top, 10)
+        .padding(.bottom, 10)
     }
 }
 
 #Preview {
-    SignUpView()
+    SignInView()
 }
+

@@ -8,16 +8,21 @@
 import SwiftUI
 
 struct AuthView: View {
+    @State private var signInTapped: Bool = false
+    @State private var signUpTapped: Bool = false
+    
     var body: some View {
-        ZStack {
-            Rectangle()
-                .fill(Color.black)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 40) {
-                logo
-                description
-                buttons
+        NavigationStack {
+            ZStack {
+                Color.black.ignoresSafeArea()
+                
+                VStack(spacing: 40) {
+                    logo
+                    description
+                    buttons
+                }
+                .navigationDestination(isPresented: $signInTapped) { SignInView() }
+                .navigationDestination(isPresented: $signUpTapped) { SignUpView() }
             }
         }
     }
@@ -53,10 +58,10 @@ struct AuthView: View {
     
     @ViewBuilder
     private var buttons: some View {
-        VStack(spacing: 30) {
-            Button(action: {}) {
+        VStack(spacing: 20) {
+            Button(action: { signInTapped = true }) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: 30)
                         .fill(.gold)
                         .frame(height: 45)
                     
@@ -66,9 +71,9 @@ struct AuthView: View {
                 }
             }
             
-            Button(action: {}) {
+            Button(action: { signUpTapped = true }) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: 30)
                         .stroke(.gold, lineWidth: 1)
                         .frame(height: 45)
                     
