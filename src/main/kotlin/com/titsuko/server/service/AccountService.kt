@@ -5,6 +5,9 @@ import com.titsuko.server.dto.request.RegisterRequest
 import com.titsuko.server.dto.response.AccountResponse
 import com.titsuko.server.dto.response.AuthResponse
 import com.titsuko.server.dto.response.AvailabilityResponse
+import com.titsuko.server.exception.InvalidTokenException
+import com.titsuko.server.exception.UserAlreadyExistsException
+import com.titsuko.server.exception.UserNotFoundException
 import com.titsuko.server.model.Profile
 import com.titsuko.server.model.User
 import com.titsuko.server.repository.ProfileRepository
@@ -27,12 +30,12 @@ class AccountService(
 
     @Transactional
     fun register(request: RegisterRequest): AuthResponse {
-        if (userRepository.findByEmail(request.email) != null) {
-            throw IllegalArgumentException("User already exists")
+        if (userRepository.findByEmail(requireNotNull(request.email)) != null) {
+            throw UserAlreadyExistsException()
         }
 
-        val hashedPassword = hashEncoder.encode(request.password).toString()
-        val (firstName, lastName) = parseFullName(request.fullName)
+        val hashedPassword = hashEncoder.encode(requireNotNull(request.password)).toString()
+        val (firstName, lastName) = parseFullName(requireNotNull(request.fullName))
 
         val profile = profileRepository.save(Profile(
             firstName = firstName,
@@ -64,10 +67,10 @@ class AccountService(
     fun getProfile(): AccountResponse {
         val authentication = SecurityContextHolder.getContext().authentication
         val email = authentication?.name
-            ?: throw RuntimeException("Authentication Error")
+            ?: throw InvalidTokenException("Session expired or invalid")
 
         val user = userRepository.findByEmail(email)
-            ?: throw RuntimeException("User not found")
+            ?: throw UserNotFoundException(email)
 
         return AccountResponse(
             firstName = user.profile.firstName,
@@ -78,7 +81,7 @@ class AccountService(
 
     @Transactional(readOnly = true)
     fun checkEmail(request: CheckEmailRequest): AvailabilityResponse {
-        val exists = userRepository.findByEmail(request.email) != null
+        val exists = userRepository.findByEmail(requireNotNull(request.email)) != null
         return AvailabilityResponse(
             available = !exists,
             message = if (exists) "Email already exists" else "Email is available"

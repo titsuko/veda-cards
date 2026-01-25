@@ -1,5 +1,6 @@
 package com.titsuko.server.security
 
+import com.titsuko.server.exception.InvalidTokenException
 import com.titsuko.server.model.RefreshToken
 import com.titsuko.server.model.User
 import com.titsuko.server.repository.RefreshTokenRepository
@@ -33,16 +34,16 @@ class RefreshService(
     @Transactional
     fun rotateToken(token: String): Pair<User, String> {
         val refreshToken = refreshTokenRepository.findByToken(token)
-            ?: throw RuntimeException("Invalid refresh token")
+            ?: throw InvalidTokenException("Refresh token not found")
 
         if (refreshToken.isRevoked) {
             refreshTokenRepository.delete(refreshToken)
-            throw RuntimeException("Token was revoked. Potential fraud detected")
+            throw InvalidTokenException("Potential fraud: Token already used")
         }
 
         if (refreshToken.expiresAt.isBefore(Instant.now())) {
             refreshTokenRepository.delete(refreshToken)
-            throw RuntimeException("Refresh token expired")
+            throw InvalidTokenException("Refresh token expired")
         }
 
         val user = refreshToken.user

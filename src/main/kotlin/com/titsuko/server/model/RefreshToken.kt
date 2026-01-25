@@ -13,7 +13,7 @@ import java.time.Instant
 
 @Entity
 @Table(name = "refresh_token")
-open data class RefreshToken(
+data class RefreshToken(
     @Id
     @Column(name = "token_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +31,4 @@ open data class RefreshToken(
 
     @Column(name = "is_revoked", nullable = false)
     val isRevoked: Boolean = false
-) {
-    protected constructor(): this(0)
-}
+)
