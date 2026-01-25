@@ -28,6 +28,10 @@ class SecurityConfig {
                 auth
                     .requestMatchers(HttpMethod.POST, "/api/accounts").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/accounts/check-email").permitAll()
+                    // session endpoints:
+                    .requestMatchers(HttpMethod.POST, "/api/sessions").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/sessions/logout").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/sessions/refresh").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
