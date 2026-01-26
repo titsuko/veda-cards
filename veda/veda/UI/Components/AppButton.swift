@@ -16,7 +16,7 @@ struct AppButtonFill: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 30)
                     .fill(.goldText)
-                    .frame(height: 45)
+                    .frame(height: 50)
                 
                 Text(title)
                     .font(.system(size: 18, weight: .semibold))
@@ -35,7 +35,7 @@ struct AppButtonClear: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 30)
                     .stroke(.gold, lineWidth: 1)
-                    .frame(height: 45)
+                    .frame(height: 50)
                 
                 Text(title)
                     .font(.system(size: 18, weight: .semibold))

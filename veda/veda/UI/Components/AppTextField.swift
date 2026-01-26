@@ -8,72 +8,79 @@
 import SwiftUI
 
 struct AppTextField: View {
-    let title: String
     let field: String
     let secure: Bool
     
     @State private var showPassword: Bool = false
+    @FocusState private var isTextFieldFocused: Bool
+    
     @Binding var text: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(title)
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundColor(.goldText)
+        ZStack {
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(.gold, lineWidth: 1)
+                .frame(height: 50)
             
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(.gold, lineWidth: 1)
-                    .frame(height: 50)
-                
-                HStack(spacing: 10) {
-                    ZStack {
-                        HStack {
-                            if text.isEmpty {
-                                Text(field)
-                                    .foregroundStyle(.gold)
-                            }
-                            Spacer()
-                        }
-                        if secure {
-                            if !showPassword {
-                                SecureField("", text: $text)
-                                    .foregroundStyle(.goldText)
-                            } else {
-                                TextField("", text: $text)
-                                    .foregroundStyle(.goldText)
-                            }
+            HStack(spacing: 10) {
+                ZStack {
+                    HStack {
+                        Text(field)
+                            .foregroundStyle(.gold)
+                            .padding(.horizontal, 3)
+                            .bold(isTextFieldFocused)
+                            .background()
+                            .offset(y: (isTextFieldFocused || !text.isEmpty) ? -26 : 0)
+                        
+                        Spacer()
+                    }
+                    if secure {
+                        if !showPassword {
+                            SecureField("", text: $text)
+                                .foregroundStyle(.goldText)
+                                .focused($isTextFieldFocused)
+                            
                         } else {
                             TextField("", text: $text)
                                 .foregroundStyle(.goldText)
+                                .focused($isTextFieldFocused)
                         }
+                    } else {
+                        TextField("", text: $text)
+                            .foregroundStyle(.goldText)
+                            .focused($isTextFieldFocused)
                     }
-                    if !text.isEmpty {
-                        if secure {
-                            Button(action: {showPassword.toggle()}) {
-                                Image(systemName: showPassword ? "eye" : "eye.slash")
-                                    .font(.system(size: 18))
-                                    .foregroundStyle(.goldText)
-                            }
-                        }
-                        Button(action: {text.removeAll()}) {
-                            Image(systemName: "xmark.circle.fill")
+                }
+                if !text.isEmpty {
+                    if secure {
+                        Button(action: { showPassword.toggle() }) {
+                            Image(systemName: showPassword ? "eye" : "eye.slash")
                                 .font(.system(size: 18))
                                 .foregroundStyle(.goldText)
                         }
                     }
+                    Button(action: { text.removeAll() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.goldText)
+                    }
                 }
-                .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
-        .animation(.easeIn(duration: 0.1), value: text)
-        .animation(.easeIn(duration: 0.1), value: showPassword)
+        .animation(.spring(duration: 0.1), value: text)
+        .animation(.spring(duration: 0.1), value: showPassword)
+        .animation(.spring(duration: 0.2), value: isTextFieldFocused)
     }
 }
 
 #Preview {
     @Previewable @State var email: String = ""
     @Previewable @State var password: String = ""
-    AppTextField(title: "Email", field: "Заполните поле", secure: false, text: $email)
-    AppTextField(title: "Password", field: "Заполните поле", secure: true, text: $password)
+    
+    VStack(spacing: 20) {
+        AppTextField(field: "Email", secure: false, text: $email)
+        AppTextField(field: "Пароль", secure: true, text: $password)
+    }
+    .padding(.horizontal)
 }

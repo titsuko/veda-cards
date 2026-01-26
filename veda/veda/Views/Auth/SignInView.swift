@@ -13,18 +13,14 @@ struct SignInView: View {
     @State var isAgreed: Bool = false
     
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                logo
-                VStack(spacing: 30) {
-                    textField
-                    Spacer()
-                    button
-                }
-                .padding(.horizontal, 30)
+        VStack(spacing: 20) {
+            logo
+            VStack(spacing: 30) {
+                textField
+                Spacer()
+                button
             }
+            .padding(.horizontal, 20)
         }
     }
     
@@ -53,16 +49,14 @@ struct SignInView: View {
     @ViewBuilder
     private var textField: some View {
         VStack(spacing: 30) {
-            AppTextField(title: "Email", field: "Заполните поле", secure: false, text: $email)
-            AppTextField(title: "Пароль", field: "Заполните поле", secure: true, text: $password)
+            AppTextField(field: "Email", secure: false, text: $email)
+            AppTextField(field: "Пароль", secure: true, text: $password)
         }
     }
     
     @ViewBuilder
     private var button: some View {
         AppButtonFill(title: "Войти", action: {})
-            .padding(.horizontal, 40)
-            .padding(.bottom, 10)
     }
 }
 

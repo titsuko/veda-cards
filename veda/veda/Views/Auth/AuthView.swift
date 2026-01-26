@@ -13,17 +13,14 @@ struct AuthView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                
-                VStack(spacing: 40) {
-                    logo
-                    description
-                    buttons
-                }
-                .navigationDestination(isPresented: $signInTapped) { SignInView() }
-                .navigationDestination(isPresented: $signUpTapped) { SignUpView() }
+            VStack(spacing: 40) {
+                logo
+                description
+                Spacer()
+                buttons
             }
+            .navigationDestination(isPresented: $signInTapped) { SignInView() }
+            .navigationDestination(isPresented: $signUpTapped) { SignUpView() }
         }
     }
     
@@ -62,7 +59,7 @@ struct AuthView: View {
             AppButtonFill(title: "Войти", action: { signInTapped = true })
             AppButtonClear(title: "Создать аккаунт", action: { signUpTapped = true })
         }
-        .padding(.horizontal, 50)
+        .padding(.horizontal, 20)
     }
 }
 

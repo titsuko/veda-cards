@@ -14,18 +14,15 @@ struct SignUpView: View {
     @State var isAgreed: Bool = false
     
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                logo
-                VStack(spacing: 30) {
-                    textField
-                    userAgreement
-                    button
-                }
-                .padding(.horizontal, 30)
+        VStack(spacing: 80) {
+            logo
+            VStack(spacing: 30) {
+                textField
+                userAgreement
+                Spacer()
+                button
             }
+            .padding(.horizontal, 20)
         }
     }
     
@@ -54,9 +51,9 @@ struct SignUpView: View {
     @ViewBuilder
     private var textField: some View {
         VStack(spacing: 30) {
-            AppTextField(title: "", field: "Ваше имя", secure: false, text: $name)
-            AppTextField(title: "Email", field: "Заполните поле", secure: false, text: $email)
-            AppTextField(title: "Пароль", field: "Заполните поле", secure: true, text: $password)
+            AppTextField(field: "Ваше имя", secure: false, text: $name)
+            AppTextField(field: "Email", secure: false, text: $email)
+            AppTextField(field: "Пароль", secure: true, text: $password)
         }
     }
     
@@ -66,13 +63,13 @@ struct SignUpView: View {
             Button(action: { isAgreed.toggle() }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(.white)
+                        .stroke(.gold)
                         .frame(width: 20, height: 20)
                     
                     if isAgreed {
                         Image(systemName: "checkmark")
-                            .foregroundStyle(.black)
-                            .bold()
+                            .font(.system(size: 14))
+                            .foregroundColor(.primary)
                     }
                 }
                 Text("Пользовательское соглашение")
@@ -85,9 +82,7 @@ struct SignUpView: View {
     
     @ViewBuilder
     private var button: some View {
-        AppButtonFill(title: "Войти", action: {})
-            .padding(.horizontal, 40)
-            .padding(.top, 10)
+        AppButtonFill(title: "Создать аккаунт", action: {})
     }
 }
 
