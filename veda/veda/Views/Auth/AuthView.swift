@@ -13,7 +13,8 @@ struct AuthView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 40) {
+            VStack(spacing: 10) {
+                Spacer()
                 logo
                 description
                 Spacer()
@@ -27,30 +28,28 @@ struct AuthView: View {
     @ViewBuilder
     private var logo: some View {
         ZStack {
-            Image("logoCircle")
+            Image("logo")
                 .resizable()
-                .frame(width: 310, height: 265)
-            
-            VStack(spacing: -25) {
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 75, height: 100)
-                    .rotationEffect(.degrees(60))
-                
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 65, height: 100)
-                    .scaleEffect(x: 1, y: 1)
-                    .rotationEffect(.degrees(260))
-            }
+                .frame(width: 230, height: 230)
         }
     }
     
     @ViewBuilder
     private var description: some View {
-        Image("description")
-            .resizable()
-            .frame(width: 290, height: 210)
+        VStack(spacing: 10) {
+            Text("VEDA.cards")
+                .font(.custom("CrimsonText-Regular", size: 48))
+                .foregroundStyle(.goldText)
+            
+            Text("СОБИРАЙ ЗНАНИЯ")
+                .font(.custom("CrimsonText-Regular", size: 24))
+                .foregroundStyle(.grayText)
+            
+            Text("Энциклопедия знаний  в  формате коллекционных карточек")
+                .font(.custom("CrimsonText-Regular", size: 16))
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.grayText)
+        }
     }
     
     @ViewBuilder

@@ -13,8 +13,19 @@ struct SignUpView: View {
     @State var password: String = ""
     @State var isAgreed: Bool = false
     
+    private var agreementText: AttributedString {
+        var part1 = AttributedString("Регистрируясь, вы подтверждаете, что ознакомились и соглашаетесь с условиями ")
+        part1.foregroundColor = .secondary
+        
+        var part2 = AttributedString("пользовательского соглашения.")
+        part2.foregroundColor = .goldText
+        part2.underlineStyle = .single
+        
+        return part1 + part2
+    }
+    
     var body: some View {
-        VStack(spacing: 80) {
+        VStack(spacing: 40) {
             logo
             VStack(spacing: 30) {
                 textField
@@ -24,27 +35,21 @@ struct SignUpView: View {
             }
             .padding(.horizontal, 20)
         }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    hideKeyboard()
+                }
+        )
     }
     
     @ViewBuilder
     private var logo: some View {
         ZStack {
-            Image("logoCircle")
+            Image("logo")
                 .resizable()
-                .frame(width: 260, height: 225)
-            
-            VStack(spacing: -10) {
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 55, height: 80)
-                    .rotationEffect(.degrees(60))
-                
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 45, height: 80)
-                    .scaleEffect(x: 1, y: 1)
-                    .rotationEffect(.degrees(260))
-            }
+                .frame(width: 230, height: 230)
         }
     }
     
@@ -59,25 +64,29 @@ struct SignUpView: View {
     
     @ViewBuilder
     private var userAgreement: some View {
-        HStack(spacing: 15) {
-            Button(action: { isAgreed.toggle() }) {
+        Button(action: { isAgreed.toggle() }) {
+            HStack(alignment: .center) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(.gold)
-                        .frame(width: 20, height: 20)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(isAgreed ? .gold : .clear)
+                        .stroke(.gold, lineWidth: 1)
+                        .frame(width: 22, height: 22)
                     
                     if isAgreed {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 14))
-                            .foregroundColor(.primary)
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
                     }
                 }
-                Text("Пользовательское соглашение")
-                    .foregroundStyle(.goldText)
+                Spacer()
+                
+                Text(agreementText)
+                    .font(.system(size: 14))
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 15)
     }
     
     @ViewBuilder

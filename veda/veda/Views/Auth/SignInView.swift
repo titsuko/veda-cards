@@ -22,27 +22,21 @@ struct SignInView: View {
             }
             .padding(.horizontal, 20)
         }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    hideKeyboard()
+                }
+        )
     }
     
     @ViewBuilder
     private var logo: some View {
         ZStack {
-            Image("logoCircle")
+            Image("logo")
                 .resizable()
-                .frame(width: 260, height: 225)
-            
-            VStack(spacing: -10) {
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 55, height: 80)
-                    .rotationEffect(.degrees(60))
-                
-                Image("logoEar")
-                    .resizable()
-                    .frame(width: 45, height: 80)
-                    .scaleEffect(x: 1, y: 1)
-                    .rotationEffect(.degrees(260))
-            }
+                .frame(width: 230, height: 230)
         }
     }
     

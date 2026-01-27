@@ -10,9 +10,22 @@
 		E2F0015B2F23B876008DDDBA /* veda.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = veda.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E20BA7F02F28090900372770 /* Exceptions for "veda" folder in "veda" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E2F0015A2F23B876008DDDBA /* veda */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E2F0015D2F23B876008DDDBA /* veda */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E20BA7F02F28090900372770 /* Exceptions for "veda" folder in "veda" target */,
+			);
 			path = veda;
 			sourceTree = "<group>";
 		};
@@ -256,6 +269,8 @@
 				DEVELOPMENT_TEAM = WZHZ6LB2F6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = veda/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +303,8 @@
 				DEVELOPMENT_TEAM = WZHZ6LB2F6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = veda/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
