@@ -32,11 +32,11 @@ struct SignUpView: View {
                 textField
                     .padding(.top, 40)
                 userAgreement
-                Spacer()
-                button
             }
-            .padding(.horizontal, 20)
+            Spacer()
+            button
         }
+        .padding(.horizontal, 20)
         .padding(.top, 40)
         .edgesIgnoringSafeArea(.top)
         .contentShape(Rectangle())

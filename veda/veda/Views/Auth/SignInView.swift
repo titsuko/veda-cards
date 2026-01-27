@@ -21,11 +21,11 @@ struct SignInView: View {
                     .padding(.top, 40)
                 resetPasswordButton
                     .padding(.top, 8)
-                Spacer()
-                button
             }
-            .padding(.horizontal, 20)
+            Spacer()
+            button
         }
+        .padding(.horizontal, 20)
         .padding(.top, 40)
         .edgesIgnoringSafeArea(.top)
         .contentShape(Rectangle())
