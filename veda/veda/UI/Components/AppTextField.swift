@@ -43,7 +43,7 @@ struct AppTextField: View {
     private var placeholder: some View {
         HStack {
             Text(field)
-                .foregroundStyle(.gold)
+                .foregroundStyle((isTextFieldFocused || !text.isEmpty) ? .gold : .goldText)
                 .padding(.horizontal, 3)
                 .bold(isTextFieldFocused)
                 .background()

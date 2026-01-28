@@ -43,7 +43,7 @@ struct AppSearchBar: View {
     private var placeholder: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 20))
+                .font(.system(size: 18))
             
             if searchText.isEmpty {
                 Text(title)
@@ -64,7 +64,7 @@ struct AppSearchBar: View {
             TextField("", text: $searchText)
                 .focused($isFocused)
                 .foregroundStyle(.goldText)
-                .padding(.leading, 42)
+                .padding(.leading, 40)
             
             if !searchText.isEmpty {
                 Button(action: { searchText = "" }) {
