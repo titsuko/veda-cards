@@ -35,7 +35,7 @@ struct AppTextField: View {
     @ViewBuilder
     private var background: some View {
         RoundedRectangle(cornerRadius: 12)
-            .stroke(.gold, lineWidth: 1)
+            .stroke(.gray.opacity(0.4), lineWidth: 1)
             .frame(height: 50)
     }
     
@@ -43,10 +43,10 @@ struct AppTextField: View {
     private var placeholder: some View {
         HStack {
             Text(field)
-                .foregroundStyle((isTextFieldFocused || !text.isEmpty) ? .gold : .goldText)
                 .padding(.horizontal, 3)
                 .bold(isTextFieldFocused)
-                .background()
+                .foregroundStyle(.secondary)
+                .background(.midnightBlue)
                 .offset(y: (isTextFieldFocused || !text.isEmpty) ? -26 : 0)
             
             Spacer()
@@ -58,17 +58,14 @@ struct AppTextField: View {
         if secure {
             if !showPassword {
                 SecureField("", text: $text)
-                    .foregroundStyle(.goldText)
                     .focused($isTextFieldFocused)
                 
             } else {
                 TextField("", text: $text)
-                    .foregroundStyle(.goldText)
                     .focused($isTextFieldFocused)
             }
         } else {
             TextField("", text: $text)
-                .foregroundStyle(.goldText)
                 .focused($isTextFieldFocused)
         }
     }
@@ -80,13 +77,13 @@ struct AppTextField: View {
                 Button(action: { showPassword.toggle() }) {
                     Image(systemName: showPassword ? "eye" : "eye.slash")
                         .font(.system(size: 18))
-                        .foregroundStyle(.goldText)
+                        .foregroundStyle(.white.secondary)
                 }
             }
             Button(action: { text.removeAll() }) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 18))
-                    .foregroundStyle(.goldText)
+                    .foregroundStyle(.white.secondary)
             }
         }
     }

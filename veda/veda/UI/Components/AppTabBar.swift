@@ -16,7 +16,7 @@ struct AppTabBar: View {
             
             ZStack {
                 Rectangle()
-                    .fill(.windowBackground.opacity(0.8))
+                    .fill(.midnightBlue.opacity(0.5))
                     .background(TransparentBlur())
                     .frame(maxWidth: .infinity, maxHeight: 85)
                 
@@ -26,7 +26,7 @@ struct AppTabBar: View {
                     tabButton(icon: selectedTab == .settings ? "gearshape.fill" : "gearshape", title: "Настройки", tab: .settings)
                 }
                 .padding(.horizontal, 10)
-                .padding(.bottom, 20)
+                .padding(.bottom)
             }
         }
     }
@@ -42,7 +42,7 @@ struct AppTabBar: View {
                     .font(.system(size: 12))
             }
             .frame(maxWidth: .infinity)
-            .foregroundStyle(isSelected ? Color.goldText : .secondary)
+            .foregroundStyle(isSelected ? Color.blue : .secondary)
         }
     }
 }

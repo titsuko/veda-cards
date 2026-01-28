@@ -14,7 +14,6 @@ struct AuthView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 10) {
-                Spacer()
                 logo
                 description
                 Spacer()
@@ -22,6 +21,7 @@ struct AuthView: View {
             }
             .navigationDestination(isPresented: $signInTapped) { SignInView() }
             .navigationDestination(isPresented: $signUpTapped) { SignUpView() }
+            .background(.midnightBlue)
         }
     }
     
@@ -39,7 +39,6 @@ struct AuthView: View {
         VStack(spacing: 10) {
             Text("VEDA.cards")
                 .font(.custom("CrimsonText-Regular", size: 48))
-                .foregroundStyle(.goldText)
             
             Text("СОБИРАЙ ЗНАНИЯ")
                 .font(.custom("CrimsonText-Regular", size: 24))

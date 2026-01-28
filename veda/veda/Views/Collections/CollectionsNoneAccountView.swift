@@ -17,6 +17,8 @@ struct CollectionsNoneAccountView: View {
             button
                 .padding(.top)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.nightBlue)
         .sheet(isPresented: $isPresented) {
             NavigationStack {
                 AuthView()
@@ -43,7 +45,6 @@ struct CollectionsNoneAccountView: View {
         VStack(spacing: 6) {
             Text("Войдите в аккаунт")
                 .font(.system(size: 26, weight: .bold))
-                .foregroundStyle(.goldText)
             
             Text("Здесь вы увидите сохраненные прогресс и те темы, которые вам понравились")
                 .font(.system(size: 16))

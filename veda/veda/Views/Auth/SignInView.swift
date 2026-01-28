@@ -23,9 +23,8 @@ struct SignInView: View {
         .padding(.horizontal, 20)
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .contentShape(Rectangle())
-        .onTapGesture {
-            hideKeyboard()
-        }
+        .onTapGesture { hideKeyboard() }
+        .background(.midnightBlue)
     }
     
     @ViewBuilder
@@ -33,7 +32,6 @@ struct SignInView: View {
         VStack(spacing: 6) {
             Text("Войти в аккаунт")
                 .font(.system(size: 26, weight: .bold))
-                .foregroundStyle(.goldText)
             
             Text("Пожалуйста, укажите email и пароль для входа")
                 .font(.system(size: 16))
@@ -59,7 +57,7 @@ struct SignInView: View {
                 Text("Забыли пароль?")
             }
         }
-        .foregroundStyle(.goldText)
+        .foregroundStyle(.blue)
     }
     
     @ViewBuilder

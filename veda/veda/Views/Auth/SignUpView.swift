@@ -18,7 +18,7 @@ struct SignUpView: View {
         part1.foregroundColor = .secondary
         
         var part2 = AttributedString("пользовательского соглашения.")
-        part2.foregroundColor = .goldText
+        part2.foregroundColor = .blue
         part2.underlineStyle = .single
         
         return part1 + part2
@@ -36,6 +36,7 @@ struct SignUpView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .contentShape(Rectangle())
         .onTapGesture { hideKeyboard() }
+        .background(.midnightBlue)
     }
     
     @ViewBuilder
@@ -43,7 +44,6 @@ struct SignUpView: View {
         VStack(spacing: 6) {
             Text("Создать аккаунт")
                 .font(.system(size: 26, weight: .bold))
-                .foregroundStyle(.goldText)
             
             Text("Пожалуйста, укажите имя, email и пароль для входа")
                 .font(.system(size: 16))
@@ -69,8 +69,8 @@ struct SignUpView: View {
             HStack(alignment: .center) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(isAgreed ? .goldText : .clear)
-                        .stroke(.gold, lineWidth: 1)
+                        .fill(isAgreed ? .blue : .clear)
+                        .stroke(.gray.opacity(0.4), lineWidth: 1)
                         .frame(width: 22, height: 22)
                     
                     if isAgreed {

@@ -14,7 +14,7 @@ struct AppSearchBar: View {
     @FocusState private var isFocused: Bool
     @Binding var searchText: String
     
-    init(title: String, height: CGFloat = 50, searchText: Binding<String>) {
+    init(title: String, height: CGFloat = 40, searchText: Binding<String>) {
         self.title = title
         self.height = height
         self._searchText = searchText
@@ -49,12 +49,9 @@ struct AppSearchBar: View {
                 Text(title)
                     .font(.system(size: 18))
             }
-            
-            if isFocused {
-                Spacer()
-            }
+            Spacer()
         }
-        .foregroundStyle(.goldText.secondary)
+        .foregroundStyle(.secondary)
         .padding(.leading, 10)
     }
     
@@ -63,7 +60,6 @@ struct AppSearchBar: View {
         HStack {
             TextField("", text: $searchText)
                 .focused($isFocused)
-                .foregroundStyle(.goldText)
                 .padding(.leading, 40)
             
             if !searchText.isEmpty {
@@ -71,7 +67,7 @@ struct AppSearchBar: View {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 18))
                 }
-                .foregroundStyle(.goldText)
+                .foregroundStyle(.secondary)
                 .padding(.trailing)
             }
         }
@@ -79,11 +75,5 @@ struct AppSearchBar: View {
 }
 
 #Preview {
-    @Previewable @State var searchText: String = ""
-    VStack {
-        Spacer()
-        AppSearchBar(title: "Поиск", searchText: $searchText)
-        Spacer()
-    }
-    .padding(.horizontal)
+    ContentView()
 }
