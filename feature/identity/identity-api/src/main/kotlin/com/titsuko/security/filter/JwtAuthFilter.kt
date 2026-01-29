@@ -1,5 +1,7 @@
-package com.titsuko.security
+package com.titsuko.security.filter
 
+import com.titsuko.repository.UserRepository
+import com.titsuko.security.JwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,7 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthFilter(
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val userRepository: UserRepository
 ): OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -31,13 +34,16 @@ class JwtAuthFilter(
 
         if (email != null && SecurityContextHolder.getContext().authentication == null) {
             if (jwtService.isTokenValid(jwt)) {
-                val authToken = UsernamePasswordAuthenticationToken(
-                    email,
-                    null,
-                    emptyList()
-                )
-                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authToken
+                val user = userRepository.findByEmail(email)
+                if (user != null) {
+                    val authorities = listOf(
+                        org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_${user.role.name}")
+                    )
+
+                    val authToken = UsernamePasswordAuthenticationToken(email, null, authorities)
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authToken
+                }
             }
         }
 

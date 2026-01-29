@@ -1,5 +1,7 @@
 package com.titsuko.security
 
+import com.titsuko.security.filter.AdminFilter
+import com.titsuko.security.filter.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -20,7 +22,11 @@ class SecurityConfig {
         BCryptPasswordEncoder(10)
 
     @Bean
-    fun filterChain(http: HttpSecurity, jwtAuthFilter: JwtAuthFilter): SecurityFilterChain {
+    fun filterChain(
+        http: HttpSecurity,
+        jwtAuthFilter: JwtAuthFilter,
+        adminFilter: AdminFilter
+    ): SecurityFilterChain {
         return http
             .csrf { csrf -> csrf.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -37,6 +43,7 @@ class SecurityConfig {
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterAfter(adminFilter, JwtAuthFilter::class.java)
             .exceptionHandling { configurer ->
                 configurer.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             }
