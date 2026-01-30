@@ -21,11 +21,11 @@ struct CardsView: View {
             .overlay(
                 HStack(spacing: 15) {
                     imageCard
-                        .padding(.leading)
                     text
                     Spacer()
                     quantityCard
                 }
+                    .padding(.horizontal, 10)
             )
     }
     
@@ -39,13 +39,14 @@ struct CardsView: View {
     @ViewBuilder
     private var imageCard: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(colorScheme == .dark ? color.gradient.opacity(0.15) : color.gradient.opacity(0.35))
+            RoundedRectangle(cornerRadius: 15)
+                .fill(colorScheme == .dark ? color.gradient.opacity(0.65) : color.gradient.opacity(0.65))
                 .stroke(color, lineWidth: 0.3)
-                .frame(width: 48, height: 48)
+                .frame(width: 60, height: 60)
             
             Image(systemName: image)
-                .foregroundStyle(color)
+                .font(.system(size: 20))
+                .foregroundStyle(.white)
         }
     }
     
@@ -79,7 +80,6 @@ struct CardsView: View {
                     .foregroundStyle(color.gradient)
             }
         }
-        .padding(.trailing)
     }
 }
 
