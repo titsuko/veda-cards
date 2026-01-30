@@ -41,6 +41,7 @@ class CardService(
                 title = titleToUse,
                 slug = slug,
                 description = request.description,
+                content = request.content ?: emptyList(),
                 status = request.status ?: CardStatus.Hidden,
                 rarity = request.rarity ?: CardRarity.COMMON,
                 category = category
@@ -103,6 +104,7 @@ class CardService(
                 generateSlug(newTitle)
             }
             description = request.description
+            content = request.content ?: this.content
             status = request.status ?: CardStatus.Hidden
             rarity = request.rarity ?: CardRarity.COMMON
             this.category = category
@@ -141,6 +143,7 @@ class CardService(
             slug = card.slug,
             title = card.title,
             description = card.description,
+            content = card.content,
             status = card.status.toString(),
             rarity = card.rarity.toString(),
             category = card.category?.let {

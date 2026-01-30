@@ -2,17 +2,7 @@ package com.titsuko.model
 
 import com.titsuko.model.`object`.CardRarity
 import com.titsuko.model.`object`.CardStatus
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "cards")
@@ -30,6 +20,10 @@ class Card(
 
     @Column(columnDefinition = "TEXT")
     var description: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    @Convert(converter = ContentConverter::class)
+    var content: List<ContentBlock> = mutableListOf(),
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

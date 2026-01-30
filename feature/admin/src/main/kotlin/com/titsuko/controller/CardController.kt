@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequestMapping("/admin/cards")
-class AdminCardController(
+class CardController(
     private val cardService: CardService,
     private val categoryService: CategoryService
 ) {
