@@ -20,7 +20,7 @@ body {
     font-size: 1.875rem;
     font-weight: 700;
     color: var(--text-main);
-    margin: 0;
+    margin: 0 0 1.5rem;
     line-height: 1.2;
     letter-spacing: -0.025em;
 }
