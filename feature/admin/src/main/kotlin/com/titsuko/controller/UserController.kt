@@ -1,7 +1,7 @@
 package com.titsuko.controller
 
 import com.titsuko.dto.request.UpdateUserRequest
-import com.titsuko.service.AdminUserService
+import com.titsuko.service.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -16,7 +16,7 @@ import java.security.Principal
 @Controller
 @RequestMapping("/admin/users")
 class UserController(
-    private val adminUserService: AdminUserService
+    private val userService: UserService
 ) {
 
     @GetMapping
@@ -26,7 +26,7 @@ class UserController(
         model: Model
     ): String {
         val pageable = PageRequest.of(page, limit)
-        val usersPage = adminUserService.getAllUsers(pageable)
+        val usersPage = userService.getAllUsers(pageable)
 
         model.addAttribute("usersPage", usersPage)
         model.addAttribute("currentPage", page)
@@ -41,7 +41,7 @@ class UserController(
         principal: Principal
     ): String {
         try {
-            adminUserService.updateUser(id, form, principal.name)
+            userService.updateUser(id, form, principal.name)
         } catch (e: Exception) {
             return "redirect:/admin/users?error=${e.message}"
         }
@@ -51,7 +51,7 @@ class UserController(
     @PostMapping("/{id}/delete")
     fun deleteUser(@PathVariable id: Long, principal: Principal): String {
         try {
-            adminUserService.deleteUser(id, principal.name)
+            userService.deleteUser(id, principal.name)
         } catch (e: Exception) {
             return "redirect:/admin/users?error=${e.message}"
         }
