@@ -54,8 +54,12 @@ struct AuthView: View {
     @ViewBuilder
     private var buttons: some View {
         VStack(spacing: 20) {
-            AppButtonFill(title: "Войти", action: { signInTapped = true })
-            AppButtonClear(title: "Создать аккаунт", action: { signUpTapped = true })
+            AppButton(title: "Войти", height: 40, style: .fill) {
+                signInTapped = true
+            }
+            AppButton(title: "Создать аккаунт", height: 40, style: .clear) {
+                signUpTapped = true
+            }
         }
         .padding(.horizontal, 20)
     }

@@ -7,71 +7,77 @@
 
 import SwiftUI
 
-struct AppButtonFill: View {
-    let title: String
-    let image: String
-    let width: CGFloat
-    let height: CGFloat
-    let action: () -> Void
-
-    init(title: String = "", image: String = "", width: CGFloat = .infinity, height: CGFloat = 40, action: @escaping () -> Void) {
-        self.title = title
-        self.image = image
-        self.width = width
-        self.height = height
-        self.action = action
-    }
-
-    var body: some View {
-        Button(action: action) {
-            ZStack {
-                Text(title)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, maxHeight: height)
-                
-                Image(systemName: image)
-                    .font(.system(size: 18, weight: .semibold))
-                    .frame(maxWidth: width, maxHeight: height)
-            }
-        }
-        .buttonStyle(.glassProminent)
-    }
+enum AppButtonStyle {
+    case fill
+    case clear
 }
 
-struct AppButtonClear: View {
-    let title: String
-    let image: String
+struct AppButton: View {
+    let title: String?
+    let systemImage: String?
     let width: CGFloat
     let height: CGFloat
+    let style: AppButtonStyle
     let action: () -> Void
 
-    init(title: String, image: String = "", width: CGFloat = .infinity, height: CGFloat = 40, action: @escaping () -> Void) {
+    init(
+        title: String? = nil,
+        systemImage: String? = nil,
+        width: CGFloat = .infinity,
+        height: CGFloat = 40,
+        style: AppButtonStyle = .fill,
+        action: @escaping () -> Void
+    ) {
         self.title = title
-        self.image = image
+        self.systemImage = systemImage
         self.width = width
         self.height = height
+        self.style = style
         self.action = action
     }
 
     var body: some View {
-        Button(action: action) {
-            ZStack {
-                Text(title)
-                    .font(.system(size: 18, weight: .semibold))
-                    .frame(maxWidth: width, maxHeight: height)
-                
-                Image(systemName: image)
-                    .font(.system(size: 18, weight: .semibold))
+        if style == .fill {
+            Button(action: action) {
+                label
                     .frame(maxWidth: width, maxHeight: height)
             }
+            .buttonStyle(.glassProminent)
+            
+        } else {
+            Button(action: action) {
+                label
+                    .frame(maxWidth: width, maxHeight: height)
+            }
+            .buttonStyle(.glass)
         }
-        .buttonStyle(.glass)
+    }
+
+    @ViewBuilder
+    private var label: some View {
+        if let title, let systemImage {
+            Label(title, systemImage: systemImage)
+                .font(.system(size: 18, weight: .semibold))
+        } else if let title {
+            Text(title)
+                .font(.system(size: 18, weight: .semibold))
+        } else if let systemImage {
+            Image(systemName: systemImage)
+                .font(.system(size: 18, weight: .semibold))
+        } else {
+            EmptyView()
+        }
     }
 }
 
 #Preview {
-    AppButtonFill(title: "Вход", action: {})
-    AppButtonClear(title: "Выход", action: {})
-    AppButtonClear(title: "", image: "xmark", width: 30, action: {})
+    AppButton(title: "Войти", style: .fill) {
+        
+    }
+    AppButton(title: "Выйти", style: .clear) {
+        
+    }
+    AppButton(systemImage: "xmark", width: 30, style: .clear) {
+        
+    }
 }

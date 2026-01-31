@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardCategory: Identifiable {
+struct CardCategory: Identifiable, Hashable {
     let id = UUID()
     let title: String
     let description: String
@@ -15,4 +15,13 @@ struct CardCategory: Identifiable {
     let color: Color
     let image: String
     let items: [CardItem]
+    
+    static func == (lhs: CardCategory, rhs: CardCategory) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
+

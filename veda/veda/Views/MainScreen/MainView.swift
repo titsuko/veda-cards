@@ -11,10 +11,10 @@ struct MainView: View {
     @State private var searchText: String = ""
     @State private var searchFocused = false
     @State private var showSearchBar: Bool = false
-    @State private var selectedCategory: CardCategory?
+    @Binding var selectedTab: SelectedTab
     
     let categories = CardCategory.mockCategories
-        
+    
     var headerHeight: CGFloat = 130
     var tabBarHeight: CGFloat = 85
     
@@ -26,16 +26,12 @@ struct MainView: View {
                     .padding(.bottom, tabBarHeight)
             }
             .overlay(alignment: .top) { header }
+            .overlay(alignment: .bottom) { AppTabBar(selectedTab: $selectedTab) }
             .ignoresSafeArea()
             .background(.mainBackground)
         }
         .animation(.spring(duration: 0.35), value: showSearchBar)
         .onTapGesture { hideKeyboard() }
-        .sheet(item: $selectedCategory) { category in
-            NavigationStack {
-                CardsListView(category: category)
-            }
-        }
     }
     
     @ViewBuilder
@@ -75,26 +71,26 @@ struct MainView: View {
             .padding(.top, 10)
             
             Spacer()
-            AppButtonClear(title: "", image: "square.grid.2x2", width: 25, height: 35, action: {
+            AppButton(systemImage: "square.grid.2x2", width: 25, height: 35, style: .clear) {
                 
-            })
-            AppButtonClear(title: "", image: "magnifyingglass", width: 25, height: 35, action: {
+            }
+            AppButton(systemImage: "magnifyingglass", width: 25, height: 35, style: .clear) {
                 showSearchBar = true
                 searchFocused = true
-            })
+            }
         }
     }
     
     @ViewBuilder
     private var searchHeader: some View {
         HStack(spacing: 0) {
-            AppSearchBar(title: "Поиск карточек", height: 45, isFocused: $searchFocused, searchText: $searchText)
+            AppSearchBar(title: "Поиск по разделу", height: 45, isFocused: $searchFocused, searchText: $searchText)
             Spacer()
-            AppButtonClear(title: "", image: "xmark", width: 25, height: 35, action: {
+            AppButton(systemImage: "xmark", width: 25, height: 35, style: .clear) {
                 showSearchBar = false
                 searchFocused = false
                 searchText = ""
-            })
+            }
         }
     }
     
@@ -105,10 +101,8 @@ struct MainView: View {
                 let category = categories[index]
                 VStack(spacing: 0) {
                     if index == 0 { Divider() }
-                    Button(action: {
-                        selectedCategory = category
-                    }) {
-                        CardsView(
+                    NavigationLink(destination: CardsListView(category: category)) {
+                        SectionsView(
                             title: category.title,
                             description: category.description,
                             quantity: category.quantity,
@@ -116,7 +110,7 @@ struct MainView: View {
                             image: category.image
                         )
                     }
-                    .buttonStyle(CardPressStyle())
+                    .buttonStyle(ButtonPressStyle())
                     
                     Divider()
                 }

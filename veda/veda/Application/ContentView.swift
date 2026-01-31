@@ -20,17 +20,16 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if selectedTab == .main {
-                MainView()
+                MainView(selectedTab: $selectedTab)
             }
             if selectedTab == .collection {
-                CollectionsView()
+                CollectionsView(selectedTab: $selectedTab)
             }
             if selectedTab == .settings {
-                SettingsView()
+                SettingsView(selectedTab: $selectedTab)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .safeAreaInset(edge: .bottom) { AppTabBar(selectedTab: $selectedTab) }
         .ignoresSafeArea()
         .background(.mainBackground)
         .onChange(of: selectedTab) { oldValue, newValue in

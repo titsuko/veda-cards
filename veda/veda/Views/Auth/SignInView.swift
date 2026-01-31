@@ -62,7 +62,9 @@ struct SignInView: View {
     
     @ViewBuilder
     private var button: some View {
-        AppButtonFill(title: "Войти", action: {})
+        AppButton(title: "Войти", height: 40, style: .fill) {
+            
+        }
     }
 }
 

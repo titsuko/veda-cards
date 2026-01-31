@@ -92,7 +92,9 @@ struct SignUpView: View {
     
     @ViewBuilder
     private var button: some View {
-        AppButtonFill(title: "Создать аккаунт", action: {})
+        AppButton(title: "Создать аккаунт", height: 40, style: .fill) {
+            
+        }
     }
 }
 

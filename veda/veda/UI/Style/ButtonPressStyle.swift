@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardPressStyle: ButtonStyle {
+struct ButtonPressStyle: ButtonStyle {
     @Environment(\.colorScheme) private var colorScheme
     
     func makeBody(configuration: Configuration) -> some View {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CardsView: View {
+struct SectionsView: View {
     let title: String
     let description: String
     let quantity: Int
