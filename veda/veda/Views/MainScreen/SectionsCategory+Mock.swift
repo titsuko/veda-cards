@@ -18,8 +18,8 @@ extension CardCategory {
             color: .orange,
             image: "sun.min",
             items: [
-                CardItem(title: "Коляда", description: "Зимний праздник"),
-                CardItem(title: "Купала", description: "Летний обряд")
+                CardItem(title: "Коляда", description: "Зимний праздник", rarity: .epic),
+                CardItem(title: "Купала", description: "Летний обряд", rarity: .common)
             ]
         ),
 
@@ -30,8 +30,8 @@ extension CardCategory {
             color: .green,
             image: "wand.and.sparkles",
             items: [
-                CardItem(title: "Солнце", description: "Источник жизни"),
-                CardItem(title: "Древо", description: "Связь миров")
+                CardItem(title: "Солнце", description: "Источник жизни", rarity: .legendary),
+                CardItem(title: "Древо", description: "Связь миров", rarity: .rare)
             ]
         ),
 

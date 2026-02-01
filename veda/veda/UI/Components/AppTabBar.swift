@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AppTabBar: View {
-    @Binding var selectedTab: SelectedTab 
+    @Binding var selectedTab: SelectedTab
     
     var body: some View {
         VStack(spacing: 0) {

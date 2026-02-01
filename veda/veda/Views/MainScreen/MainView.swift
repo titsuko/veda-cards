@@ -21,7 +21,7 @@ struct MainView: View {
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                cardsView
+                sectionsView
                     .padding(.top, headerHeight)
                     .padding(.bottom, tabBarHeight)
             }
@@ -71,7 +71,7 @@ struct MainView: View {
             .padding(.top, 10)
             
             Spacer()
-            AppButton(systemImage: "square.grid.2x2", width: 25, height: 35, style: .clear) {
+            AppButton(systemImage: "line.3.horizontal.decrease", width: 25, height: 35, style: .clear) {
                 
             }
             AppButton(systemImage: "magnifyingglass", width: 25, height: 35, style: .clear) {
@@ -95,7 +95,7 @@ struct MainView: View {
     }
     
     @ViewBuilder
-    private var cardsView: some View {
+    private var sectionsView: some View {
         VStack(spacing: 0) {
             ForEach(categories.indices, id: \.self) { index in
                 let category = categories[index]
@@ -114,7 +114,6 @@ struct MainView: View {
                     
                     Divider()
                 }
-                .foregroundStyle(.primary)
             }
         }
     }
