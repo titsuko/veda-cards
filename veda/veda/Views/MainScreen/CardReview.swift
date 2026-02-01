@@ -20,8 +20,9 @@ struct CardReview: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
-                
+                historyCard
             }
+            .padding(.top, headerHeight)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .top) { header }
@@ -38,26 +39,27 @@ struct CardReview: View {
                 Rectangle()
                     .fill(
                         LinearGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.60) : item.rarity.color.opacity(0.70), location: 0.0),
-                            .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.30) : item.rarity.color.opacity(0.40), location: 0.45),
-                            .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.15) : item.rarity.color.opacity(0.25), location: 0.75),
-                            .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.05) : item.rarity.color.opacity(0.15), location: 1.0),
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ))
+                            gradient: Gradient(stops: [
+                                .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.60) : item.rarity.color.opacity(0.70), location: 0.0),
+                                .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.30) : item.rarity.color.opacity(0.40), location: 0.45),
+                                .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.15) : item.rarity.color.opacity(0.25), location: 0.75),
+                                .init(color: colorScheme == .dark ? item.rarity.color.opacity(0.05) : item.rarity.color.opacity(0.15), location: 1.0),
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ))
                     .background(TransparentBlur())
                     .frame(height: headerHeight)
                 
-                headerContent(item: item)
+                CardsHeader(item: item, category: category)
                     .padding(.horizontal)
                     .padding(.bottom, 20)
             }
             Divider()
         }
     }
-        
+    
+    @ViewBuilder
     private var navigation: some View {
         ZStack(alignment: .bottom) {
             Rectangle()
@@ -65,9 +67,7 @@ struct CardReview: View {
                 .frame(height: navigationHeaderHeight)
             
             HStack {
-                AppButton(systemImage: "chevron.backward", width: 25, height: 35, style: .clear) {
-                    dismiss()
-                }
+                AppButton(systemImage: "chevron.backward", width: 25, height: 35, style: .clear) { dismiss() }
                 Spacer()
             }
             .padding(.horizontal)
@@ -76,7 +76,27 @@ struct CardReview: View {
     }
     
     @ViewBuilder
-    private func headerContent(item: CardItem) -> some View {
+    private var historyCard: some View {
+        ForEach(0..<20) { _ in
+            VStack(spacing: 0) {
+                ZStack {
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(height: 60)
+                    
+                    
+                }
+            }
+            Divider()
+        }
+    }
+}
+
+private struct CardsHeader: View {
+    let item: CardItem
+    let category: CardCategory
+    
+    var body: some View {
         VStack {
             ZStack {
                 RoundedRectangle(cornerRadius: 15)
@@ -114,11 +134,6 @@ struct CardReview: View {
             }
             .padding(.horizontal, 20)
         }
-    }
-    
-    @ViewBuilder
-    private var historyCard: some View {
-        
     }
 }
 
