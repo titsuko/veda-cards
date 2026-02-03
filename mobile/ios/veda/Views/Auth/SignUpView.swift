@@ -8,18 +8,24 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @EnvironmentObject var viewModel: SignUpViewModel
+    @EnvironmentObject var signUpViewModel: SignUpViewModel
+    
+    var agreementText: AttributedString {
+        var part1 = AttributedString("Вы подтверждаете, что ознакомились и соглашаетесь с условиями ")
+        part1.foregroundColor = .secondary
+        
+        var part2 = AttributedString("пользовательского соглашения.")
+        part2.foregroundColor = .blue
+        part2.underlineStyle = .single
+        
+        return part1 + part2
+    }
     
     var body: some View {
         VStack {
             description
-            if !viewModel.isLoading {
-                textField
-                userAgreement
-            } else {
-                Spacer()
-                progressView
-            }
+            textField
+            userAgreement
             Spacer()
             button
         }
@@ -29,18 +35,17 @@ struct SignUpView: View {
         .contentShape(Rectangle())
         .onTapGesture { hideKeyboard() }
         .background(.sheetBackground)
-        .animation(.spring(duration: 0.2), value: viewModel.isButtonDisabled)
-        .animation(.spring(duration: 0.2), value: viewModel.isLoading)
-        .alert("Ошибка", isPresented: $viewModel.showError) {
+        .animation(.spring(duration: 0.2), value: signUpViewModel.isButtonDisabled)
+        .animation(.spring(duration: 0.2), value: signUpViewModel.isLoading)
+        .alert("Ошибка", isPresented: $signUpViewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(signUpViewModel.errorMessage)
         }
     }
-}
     
-private extension SignUpView {
-    var description: some View {
+    @ViewBuilder
+    private var description: some View {
         VStack(spacing: 6) {
             Text("Создать аккаунт")
                 .font(.system(size: 26, weight: .bold))
@@ -53,27 +58,32 @@ private extension SignUpView {
         }
     }
     
-    var textField: some View {
+    @ViewBuilder
+    private var textField: some View {
         VStack(spacing: 20) {
-            AppTextField(field: "Ваше имя", secure: false, text: $viewModel.name)
-            AppTextField(field: "Email", secure: false, text: $viewModel.email)
-            AppTextField(field: "Пароль", secure: true, text: $viewModel.password)
+            AppTextField(field: "Ваше имя", secure: false, text: $signUpViewModel.name)
+            AppTextField(field: "Email", secure: false, text: $signUpViewModel.email)
+            AppTextField(field: "Пароль", secure: true, text: $signUpViewModel.password)
         }
         .padding(.top, 30)
     }
     
-    var userAgreement: some View {
+    @ViewBuilder
+    private var userAgreement: some View {
         Button {
-            viewModel.isAgreed.toggle()
+            signUpViewModel.isAgreed.toggle()
         } label: {
             HStack {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(viewModel.isAgreed ? .blue : .clear)
-                        .stroke(.gray.opacity(0.4), lineWidth: 1)
+                        .fill(signUpViewModel.isAgreed ? Color.blue : Color.clear)
                         .frame(width: 22, height: 22)
-                    
-                    if viewModel.isAgreed {
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                        )
+
+                    if signUpViewModel.isAgreed {
                         Image(systemName: "checkmark")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.white)
@@ -90,31 +100,12 @@ private extension SignUpView {
         .padding(.top, 20)
     }
     
-    var button: some View {
+    @ViewBuilder
+    private var button: some View {
         AppButton(title: "Создать аккаунт", height: 40, style: .fill) {
-            viewModel.register()
+            signUpViewModel.register()
         }
-        .disabled(viewModel.isButtonDisabled)
-        .opacity(viewModel.isLoading ? 0.6 : 1)
+        .disabled(signUpViewModel.isButtonDisabled)
+        .opacity(signUpViewModel.isLoading ? 0.6 : 1)
     }
-    
-    var progressView: some View {
-        ProgressView()
-    }
-    
-    var agreementText: AttributedString {
-        var part1 = AttributedString("Вы подтверждаете, что ознакомились и соглашаетесь с условиями ")
-        part1.foregroundColor = .secondary
-        
-        var part2 = AttributedString("пользовательского соглашения.")
-        part2.foregroundColor = .blue
-        part2.underlineStyle = .single
-        
-        return part1 + part2
-    }
-}
-
-#Preview {
-    SignUpView()
-        .environmentObject(SignUpViewModel())
 }

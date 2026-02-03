@@ -15,14 +15,31 @@ struct CardsListView: View {
     @State private var searchFocused = false
     @State private var showSearchBar: Bool = false
     
-    let category: CardCategory
+    let categories: CardCategory
     
     var headerHeight: CGFloat = 130
     
+    var filteredItems: [CardItem] {
+        if searchText.isEmpty {
+            return categories.items
+        } else {
+            return categories.items.filter {
+                $0.title.localizedCaseInsensitiveContains(searchText) ||
+                $0.description.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+    }
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            cardsListView
-                .padding(.top, headerHeight)
+        VStack {
+            if filteredItems.isEmpty {
+                emptySearchView
+            } else {
+                ScrollView(showsIndicators: false) {
+                    cardsListView
+                        .padding(.top, headerHeight)
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .top) { header }
@@ -67,20 +84,23 @@ struct CardsListView: View {
                 }
                 Spacer()
                 VStack(alignment: .center, spacing: 5) {
-                    Text(category.title)
+                    Text(categories.title)
                         .font(.system(size: 18, weight: .semibold))
                         .multilineTextAlignment(.center)
                         .lineLimit(1)
                     
-                    Text("\(category.quantity) карточек")
+                    Text("\(categories.quantity) карточек")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(category.color.gradient)
+                        .gradientForeground(categories.color)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 3)
+                        .background(
+                            Capsule()
+                                .fill(categories.color.opacity(colorScheme == .dark ? 0.1 : 0.2))
+                        )
                         .overlay(
                             Capsule()
-                                .fill(colorScheme == .dark ? category.color.gradient.opacity(0.1) : category.color.gradient.opacity(0.2))
-                                .stroke(category.color.opacity(0.4), lineWidth: 1)
+                                .stroke(categories.color.opacity(0.4), lineWidth: 1)
                         )
                 }
                 Spacer()
@@ -107,10 +127,10 @@ struct CardsListView: View {
     
     @ViewBuilder
     private var cardsListView: some View {
-        NavigationList(items: category.items) { item in
-            CardsView(category: category, item: item)
+        NavigationList(items: filteredItems) { item in
+            CardsView(category: categories, item: item)
         } destination: { item in
-            CardReview(category: category, item: item)
+            CardReview(category: categories, item: item)
         } background: { item in
             LinearGradient(
                 gradient: Gradient(stops: [
@@ -122,6 +142,20 @@ struct CardsListView: View {
                 startPoint: .trailing,
                 endPoint: .leading
             )
+        }
+    }
+    
+    @ViewBuilder
+    private var emptySearchView: some View {
+        VStack {
+            Image(systemName: "menucard.fill")
+                .resizable()
+                .frame(width: 35, height: 50)
+                .foregroundColor(.secondary)
+            
+            Text("Нет карточек")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.secondary)
         }
     }
 }
@@ -166,12 +200,15 @@ private struct CardsView: View {
             
             Text(item.rarity.name)
                 .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(item.rarity.color.gradient)
+                .gradientForeground(item.rarity.color)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .overlay(
+                .background(
                     Capsule()
                         .fill(item.rarity.color.opacity(0.2))
+                )
+                .overlay(
+                    Capsule()
                         .stroke(item.rarity.color.opacity(0.4), lineWidth: 1)
                 )
         }
@@ -183,7 +220,7 @@ private struct CardsView: View {
 
 #Preview {
     CardsListView(
-        category: CardCategory(
+        categories: CardCategory(
             title: "Праздники",
             description: "Традиции и обряды солнцестояния с кострами, гаданиями и древними ",
             quantity: 5,

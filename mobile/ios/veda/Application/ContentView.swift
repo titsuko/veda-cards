@@ -14,30 +14,35 @@ enum SelectedTab: Hashable {
 }
 
 struct ContentView: View {
+    @EnvironmentObject var session: SessionManager
+    @EnvironmentObject var signInViewModel: SignInViewModel
+    @EnvironmentObject var signUpViewModel: SignUpViewModel
+    
     @State private var selectedTab: SelectedTab = .main
     @State private var previousTab: SelectedTab = .main
 
     var body: some View {
         ZStack {
-            if selectedTab == .main {
+            switch selectedTab {
+            case .main:
                 MainView(selectedTab: $selectedTab)
-            }
-            if selectedTab == .collection {
+            case .collection:
                 CollectionsView(selectedTab: $selectedTab)
-            }
-            if selectedTab == .settings {
+            case .settings:
                 SettingsView(selectedTab: $selectedTab)
+                    .environmentObject(signInViewModel)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea()
-        .background(.mainBackground)
-        .onChange(of: selectedTab) { oldValue, newValue in
-            previousTab = oldValue
+        .background(Color.mainBackground)
+        .onChange(of: selectedTab) { newValue in
+            previousTab = selectedTab
         }
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(SignInViewModel())
 }

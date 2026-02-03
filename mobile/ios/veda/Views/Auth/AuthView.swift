@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct AuthView: View {
+    @EnvironmentObject var signUpViewModel: SignUpViewModel
+    @EnvironmentObject var signInViewModel: SignInViewModel
+    
     @State private var signInTapped: Bool = false
     @State private var signUpTapped: Bool = false
     
@@ -22,18 +25,18 @@ struct AuthView: View {
             }
             .navigationDestination(isPresented: $signInTapped) {
                 SignInView()
+                    .environmentObject(signInViewModel)
             }
             .navigationDestination(isPresented: $signUpTapped) {
                 SignUpView()
-                    .environmentObject(SignUpViewModel())
+                    .environmentObject(signUpViewModel)
             }
             .background(.sheetBackground)
         }
     }
-}
-
-private extension AuthView {
-    var logo: some View {
+    
+    @ViewBuilder
+    private var logo: some View {
         ZStack {
             Image("logo")
                 .resizable()
@@ -41,7 +44,8 @@ private extension AuthView {
         }
     }
     
-    var description: some View {
+    @ViewBuilder
+    private var description: some View {
         VStack(spacing: 10) {
             Text("VEDA.cards")
                 .font(.custom("CrimsonText-Regular", size: 48))
@@ -57,7 +61,8 @@ private extension AuthView {
         }
     }
     
-    var buttons: some View {
+    @ViewBuilder
+    private var buttons: some View {
         VStack(spacing: 15) {
             AppButton(title: "Войти", height: 40, style: .fill) {
                 signInTapped = true
@@ -68,8 +73,4 @@ private extension AuthView {
         }
         .padding(.horizontal, 20)
     }
-}
-
-#Preview {
-    AuthView()
 }

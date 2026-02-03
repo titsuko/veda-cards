@@ -9,14 +9,22 @@ import SwiftUI
 
 @main
 struct vedaApp: App {
-    @StateObject private var authViewModel = SignUpViewModel()
+    @StateObject private var session = SessionManager.shared
+    @StateObject private var signUpViewModel = SignUpViewModel()
+    @StateObject private var signInViewModel = SignInViewModel()
     
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isRegistered {
+            if session.isLoggedIn {
                 ContentView()
+                    .environmentObject(session)
+                    .environmentObject(signInViewModel)
+                    .environmentObject(signUpViewModel)
             } else {
                 AuthView()
+                    .environmentObject(session)
+                    .environmentObject(signInViewModel)
+                    .environmentObject(signUpViewModel)
             }
         }
     }
