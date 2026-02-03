@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AuthView: View {
+    @StateObject private var signUpViewModel = SignUpViewModel()
+    
     @State private var signInTapped: Bool = false
     @State private var signUpTapped: Bool = false
     
@@ -24,8 +26,7 @@ struct AuthView: View {
                 SignInView()
             }
             .navigationDestination(isPresented: $signUpTapped) {
-                SignUpView()
-                    .environmentObject(SignUpViewModel())
+                SignUpView(signUpViewModel: signUpViewModel)
             }
             .background(.sheetBackground)
         }
@@ -68,8 +69,4 @@ private extension AuthView {
         }
         .padding(.horizontal, 20)
     }
-}
-
-#Preview {
-    AuthView()
 }

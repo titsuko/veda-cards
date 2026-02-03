@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @EnvironmentObject var viewModel: SignUpViewModel
+    @ObservedObject var signUpViewModel: SignUpViewModel
     
     var body: some View {
         VStack {
             description
-            if !viewModel.isLoading {
+            if !signUpViewModel.isLoading {
                 textField
                 userAgreement
             } else {
@@ -29,12 +29,12 @@ struct SignUpView: View {
         .contentShape(Rectangle())
         .onTapGesture { hideKeyboard() }
         .background(.sheetBackground)
-        .animation(.spring(duration: 0.2), value: viewModel.isButtonDisabled)
-        .animation(.spring(duration: 0.2), value: viewModel.isLoading)
-        .alert("Ошибка", isPresented: $viewModel.showError) {
+        .animation(.spring(duration: 0.2), value: signUpViewModel.isButtonDisabled)
+        .animation(.spring(duration: 0.2), value: signUpViewModel.isLoading)
+        .alert("Ошибка", isPresented: $signUpViewModel.showError) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(signUpViewModel.errorMessage)
         }
     }
 }
@@ -55,25 +55,25 @@ private extension SignUpView {
     
     var textField: some View {
         VStack(spacing: 20) {
-            AppTextField(field: "Ваше имя", secure: false, text: $viewModel.name)
-            AppTextField(field: "Email", secure: false, text: $viewModel.email)
-            AppTextField(field: "Пароль", secure: true, text: $viewModel.password)
+            AppTextField(field: "Ваше имя", secure: false, text: $signUpViewModel.name)
+            AppTextField(field: "Email", secure: false, text: $signUpViewModel.email)
+            AppTextField(field: "Пароль", secure: true, text: $signUpViewModel.password)
         }
         .padding(.top, 30)
     }
     
     var userAgreement: some View {
         Button {
-            viewModel.isAgreed.toggle()
+            signUpViewModel.isAgreed.toggle()
         } label: {
             HStack {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(viewModel.isAgreed ? .blue : .clear)
+                        .fill(signUpViewModel.isAgreed ? .blue : .clear)
                         .stroke(.gray.opacity(0.4), lineWidth: 1)
                         .frame(width: 22, height: 22)
                     
-                    if viewModel.isAgreed {
+                    if signUpViewModel.isAgreed {
                         Image(systemName: "checkmark")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundColor(.white)
@@ -92,10 +92,10 @@ private extension SignUpView {
     
     var button: some View {
         AppButton(title: "Создать аккаунт", height: 40, style: .fill) {
-            viewModel.register()
+            signUpViewModel.register()
         }
-        .disabled(viewModel.isButtonDisabled)
-        .opacity(viewModel.isLoading ? 0.6 : 1)
+        .disabled(signUpViewModel.isButtonDisabled)
+        .opacity(signUpViewModel.isLoading ? 0.6 : 1)
     }
     
     var progressView: some View {
@@ -115,6 +115,5 @@ private extension SignUpView {
 }
 
 #Preview {
-    SignUpView()
-        .environmentObject(SignUpViewModel())
+    SignUpView(signUpViewModel: SignUpViewModel())
 }

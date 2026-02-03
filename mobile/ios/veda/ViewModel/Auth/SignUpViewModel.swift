@@ -41,8 +41,13 @@ final class SignUpViewModel: ObservableObject {
                     email: email,
                     password: password
                 )
-                _ = try await accountService.register(data: model)
-                isRegistered = true
+                let auth = try await accountService.register(data: model)
+            
+                SessionManager.shared.saveTokens(
+                    accessToken: auth.accessToken,
+                    refreshToken: auth.refreshToken
+                )
+                
             } catch {
                 errorMessage = error.localizedDescription
                 showError = true

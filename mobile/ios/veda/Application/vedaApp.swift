@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct vedaApp: App {
-    @StateObject private var authViewModel = SignUpViewModel()
+    @StateObject private var session = SessionManager.shared
     
     var body: some Scene {
         WindowGroup {
-            if !authViewModel.isRegistered {
+            if session.isLoggedIn {
                 ContentView()
             } else {
                 AuthView()
