@@ -19,7 +19,7 @@ class AdminAuthController(
     private val sessionService: SessionService
 ) {
 
-    @PostMapping("/login")
+    @PostMapping("/auth")
     fun handleLogin(
         @ModelAttribute request: LoginRequest,
         response: HttpServletResponse,
@@ -37,6 +37,10 @@ class AdminAuthController(
             "login"
         } catch (e: InvalidCredentialsException) {
             model.addAttribute("error", e.message)
+            "login"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            model.addAttribute("error", "Произошла системная ошибка: ${e.message}")
             "login"
         }
     }
