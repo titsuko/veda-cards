@@ -33,8 +33,10 @@ class SecurityConfig(
                 auth.requestMatchers(
                     "/css/**", "/js/**", "/images/**", "/assets/**",
                     "/admin/login", "/api/accounts", "/api/accounts/check-email",
-                    "/api/sessions", "/api/sessions/refresh", "/api/health"
+                    "/api/sessions", "/api/sessions/refresh", "/api/health",
+                    "/admin/login", "/admin/auth"
                 ).permitAll()
+                auth.requestMatchers("/admin/**").hasRole("ADMIN")
                 auth.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)

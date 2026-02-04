@@ -16,7 +16,7 @@
       <p class="auth-card__subtitle">Please sign in to your account</p>
     </div>
 
-    <form th:action="@{/admin/login}" method="post" class="form">
+    <form th:action="@{/admin/auth}" method="post" class="form">
 
       <div th:if="${error}" class="alert alert--error">
         <span th:text="${error}"></span>
