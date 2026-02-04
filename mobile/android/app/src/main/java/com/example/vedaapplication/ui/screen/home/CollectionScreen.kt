@@ -21,7 +21,7 @@ import com.example.vedaapplication.ui.component.AppBottomBar
 import com.example.vedaapplication.ui.screen.home.component.HomeHeader
 
 @Composable
-fun HomeScreen(
+fun CollectionScreen(
     navController: NavController
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -50,14 +50,14 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeader(
-                title = "Main",
+                title = "Collection",
                 onSearchClick = {}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Welcome to Home Screen"
+                text = "Welcome to Collection Screen"
             )
         }
     }
@@ -65,6 +65,6 @@ fun HomeScreen(
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
+private fun CollectionScreenPreview() {
+    CollectionScreen(navController = rememberNavController())
 }
