@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Landscape
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Person
@@ -39,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.vedaapplication.R
 import com.example.vedaapplication.remote.service.CategoryService
 import com.example.vedaapplication.ui.component.AppBottomBar
 import com.example.vedaapplication.ui.screen.home.component.CardCategory
@@ -107,7 +109,8 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeader(
-                title = "Разделы",
+                title = R.string.home_title,
+                icon = Icons.Default.Home,
                 onSearchClick = {}
             )
 

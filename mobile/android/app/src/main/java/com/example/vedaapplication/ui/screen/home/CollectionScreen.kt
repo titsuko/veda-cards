@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CollectionsBookmark
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.vedaapplication.R
 import com.example.vedaapplication.ui.component.AppBottomBar
 import com.example.vedaapplication.ui.screen.home.component.HomeHeader
 
@@ -50,7 +54,8 @@ fun CollectionScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeader(
-                title = "Collection",
+                title = R.string.collections_title,
+                icon = Icons.Default.CollectionsBookmark,
                 onSearchClick = {}
             )
 

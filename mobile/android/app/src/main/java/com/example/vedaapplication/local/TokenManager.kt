@@ -31,16 +31,6 @@ class TokenManager(context: Context) {
         }
     }
 
-    fun saveLanguage(languageCode: String) {
-        sharedPreferences.edit {
-            putString("app_language", languageCode)
-        }
-    }
-
-    fun getLanguage(): String {
-        return sharedPreferences.getString("app_language", "ru") ?: "ru"
-    }
-
     fun getAccessToken(): String? = sharedPreferences.getString("access_token", null)
 
     fun getRefreshToken(): String? = sharedPreferences.getString("refresh_token", null)
@@ -51,10 +41,6 @@ class TokenManager(context: Context) {
     }
 
     fun clearTokens() {
-        sharedPreferences.edit {
-            remove("access_token")
-            remove("refresh_token")
-            remove("access_token_expires_at")
-        }
+        sharedPreferences.edit { clear() }
     }
 }

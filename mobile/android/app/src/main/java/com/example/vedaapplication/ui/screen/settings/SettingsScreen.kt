@@ -2,6 +2,7 @@ package com.example.vedaapplication.ui.screen.settings
 
 import android.app.Activity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -37,6 +40,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.vedaapplication.R
+import com.example.vedaapplication.local.SettingsManager
 import com.example.vedaapplication.local.TokenManager
 import com.example.vedaapplication.remote.model.request.RefreshRequest
 import com.example.vedaapplication.remote.model.response.AccountResponse
@@ -46,6 +50,7 @@ import com.example.vedaapplication.ui.component.AppBottomBar
 import com.example.vedaapplication.ui.navigation.Screen
 import com.example.vedaapplication.ui.screen.home.component.HomeHeader
 import com.example.vedaapplication.ui.screen.settings.component.LogoutDialog
+import com.example.vedaapplication.ui.screen.settings.component.ProfileCard
 import com.example.vedaapplication.ui.screen.settings.component.SettingsActionItem
 import com.example.vedaapplication.ui.screen.settings.component.SettingsSwitchItem
 import kotlinx.coroutines.launch
@@ -60,6 +65,7 @@ fun SettingsScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val tokenManager = remember { TokenManager(context) }
+    val settingsManager = remember { SettingsManager(context) }
     val sessionService = remember { SessionService() }
     val accountService = remember { AccountService() }
 
@@ -67,9 +73,9 @@ fun SettingsScreen(
     var isLoading by remember { mutableStateOf(true) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
-    var isDarkTheme by remember { mutableStateOf(false) }
+    var isDarkTheme by remember { mutableStateOf(settingsManager.isDarkTheme()) }
 
-    val currentLangCode = remember { tokenManager.getLanguage() }
+    val currentLangCode = remember { settingsManager.getLanguage() }
     val currentLangLabel = if (currentLangCode == "ru") "Русский" else "English"
 
     LaunchedEffect(Unit) {
@@ -131,9 +137,30 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeader(
-                title = stringResource(R.string.settings_title),
+                title = R.string.settings_title,
+                icon = Icons.Default.Settings,
                 onSearchClick = {}
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                profile?.let { user ->
+                    ProfileCard(
+                        user = user,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -158,7 +185,11 @@ fun SettingsScreen(
                         icon = Icons.Default.DarkMode,
                         title = stringResource(R.string.dark_theme),
                         checked = isDarkTheme,
-                        onCheckedChange = { isDarkTheme = it }
+                        onCheckedChange = { isChecked ->
+                            isDarkTheme = isChecked
+                            settingsManager.saveThemeMode(isChecked)
+                            (context as? Activity)?.recreate()
+                        }
                     )
 
                     HorizontalDivider(
@@ -172,11 +203,7 @@ fun SettingsScreen(
                         value = currentLangLabel,
                         onClick = {
                             val newLang = if (currentLangCode == "ru") "en" else "ru"
-                            tokenManager.saveLanguage(newLang)
-
-                            // ВАЖНО: Используем recreate() вместо startActivity
-                            // Это сохранит стек навигации и вернет вас на этот же экран,
-                            // но с обновленным языком (благодаря attachBaseContext в MainActivity)
+                            settingsManager.saveLanguage(newLang)
                             (context as? Activity)?.recreate()
                         }
                     )
