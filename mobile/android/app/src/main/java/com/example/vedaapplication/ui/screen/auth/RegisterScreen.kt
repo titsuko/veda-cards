@@ -33,6 +33,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.vedaapplication.R
+import com.example.vedaapplication.local.TokenManager
+import com.example.vedaapplication.remote.model.request.CheckEmailRequest
 import com.example.vedaapplication.remote.service.AccountService
 import com.example.vedaapplication.ui.component.AppButton
 import com.example.vedaapplication.ui.component.AppDialog
@@ -51,14 +53,15 @@ fun RegisterScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val accountService: AccountService = remember { AccountService() }
+
+    val accountService = remember { AccountService() }
+    val tokenManager = remember { TokenManager(context) }
+
     var state by remember { mutableStateOf(RegisterState()) }
 
     if (state.errorMessage != null) {
         AppDialog(
-            onConfirmation = {
-                state = state.copy(errorMessage = null)
-            },
+            onConfirmation = { state = state.copy(errorMessage = null) },
             dialogTitle = stringResource(id = R.string.error_title),
             dialogText = state.errorMessage!!
         )
@@ -147,10 +150,25 @@ fun RegisterScreen(
                 onClick = {
                     scope.launch {
                         state = state.copy(isLoading = true, errorMessage = null)
-
                         try {
-                            val request = state.toRequest()
-                            accountService.register(request)
+                            val emailCheckResponse = accountService.checkEmail(
+                                CheckEmailRequest(state.email)
+                            )
+
+                            if (!emailCheckResponse.available) {
+                                state = state.copy(
+                                    isLoading = false,
+                                    errorMessage = context.getString(R.string.email_already_registered)
+                                )
+                                return@launch
+                            }
+
+                            val authResponse = accountService.register(state.toRequest())
+
+                            tokenManager.saveTokens(
+                                accessToken = authResponse.accessToken,
+                                refreshToken = authResponse.refreshToken
+                            )
 
                             state = state.copy(isLoading = false)
                             onRegisterSuccess()
@@ -171,5 +189,9 @@ fun RegisterScreen(
 @Preview(showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
-    RegisterScreen(onBackClick = {}, onRedirect = {}, onRegisterSuccess = {})
+    RegisterScreen(
+        onBackClick = {},
+        onRedirect = {},
+        onRegisterSuccess = {}
+    )
 }

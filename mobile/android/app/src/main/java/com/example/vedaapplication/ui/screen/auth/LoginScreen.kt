@@ -29,8 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.vedaapplication.R
+import com.example.vedaapplication.local.TokenManager
 import com.example.vedaapplication.remote.service.SessionService
 import com.example.vedaapplication.ui.component.AppButton
 import com.example.vedaapplication.ui.component.AppDialog
@@ -49,14 +51,15 @@ fun LoginScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val sessionService: SessionService = remember { SessionService() }
+
+    val sessionService = remember { SessionService() }
+    val tokenManager = remember { TokenManager(context) }
+
     var state by remember { mutableStateOf(LoginState()) }
 
     if (state.errorMessage != null) {
         AppDialog(
-            onConfirmation = {
-                state = state.copy(errorMessage = null)
-            },
+            onConfirmation = { state = state.copy(errorMessage = null) },
             dialogTitle = stringResource(id = R.string.error_title),
             dialogText = state.errorMessage!!
         )
@@ -135,10 +138,14 @@ fun LoginScreen(
                 onClick = {
                     scope.launch {
                         state = state.copy(isLoading = true, errorMessage = null)
-
                         try {
                             val request = state.toRequest()
-                            sessionService.login(request)
+                            val response = sessionService.login(request)
+
+                            tokenManager.saveTokens(
+                                accessToken = response.accessToken,
+                                refreshToken = response.refreshToken
+                            )
 
                             state = state.copy(isLoading = false)
                             onLoginSuccess()
@@ -154,4 +161,14 @@ fun LoginScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LoginScreenPreview() {
+    LoginScreen(
+        onBackClick = {},
+        onRedirect = {},
+        onLoginSuccess = {}
+    )
 }

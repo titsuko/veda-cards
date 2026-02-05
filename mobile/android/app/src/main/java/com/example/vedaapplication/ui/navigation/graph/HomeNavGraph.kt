@@ -7,7 +7,7 @@ import androidx.navigation.navigation
 import com.example.vedaapplication.ui.navigation.Screen
 import com.example.vedaapplication.ui.screen.home.CollectionScreen
 import com.example.vedaapplication.ui.screen.home.HomeScreen
-import com.example.vedaapplication.ui.screen.home.SettingsScreen
+import com.example.vedaapplication.ui.screen.settings.SettingsScreen
 
 fun NavGraphBuilder.homeNavGraph(
     navController: NavHostController
