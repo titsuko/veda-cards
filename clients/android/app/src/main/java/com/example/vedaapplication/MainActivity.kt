@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.vedaapplication.local.SettingsManager
@@ -20,18 +22,15 @@ class MainActivity : ComponentActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         val settingsManager = SettingsManager(newBase)
-        val languageCode = settingsManager.getLanguage()
-        super.attachBaseContext(LocaleHelper.onAttach(newBase, languageCode))
+        super.attachBaseContext(LocaleHelper.onAttach(newBase, settingsManager.getLanguage()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val tokenManager = TokenManager(applicationContext)
-        val settingsManager = SettingsManager(applicationContext)
-
-        val isDarkTheme = settingsManager.isDarkTheme()
+        val settingsManager = SettingsManager(this)
+        val tokenManager = TokenManager(this)
 
         val startDestination = if (tokenManager.isUserLoggedIn) {
             Screen.HomeGraph.route
@@ -40,7 +39,11 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            VedaApplicationTheme(darkTheme = isDarkTheme) {
+            val isDarkTheme = remember {
+                mutableStateOf(settingsManager.isDarkTheme())
+            }
+
+            VedaApplicationTheme(darkTheme = isDarkTheme.value) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
                     Navigation(

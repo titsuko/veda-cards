@@ -6,13 +6,14 @@ import com.example.vedaapplication.remote.model.response.AccountResponse
 import com.example.vedaapplication.remote.model.response.AuthResponse
 import com.example.vedaapplication.remote.model.response.AvailabilityResponse
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AccountApi {
     @POST("accounts")
     suspend fun register(@Body request: RegisterRequest): AuthResponse
 
-    @POST("accounts/me")
+    @GET("accounts/me")
     suspend fun getProfile(): AccountResponse
 
     @POST("accounts/check-email")

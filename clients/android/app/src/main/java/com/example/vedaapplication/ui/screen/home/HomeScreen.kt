@@ -1,10 +1,11 @@
 package com.example.vedaapplication.ui.screen.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,7 +20,6 @@ import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,12 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.vedaapplication.R
 import com.example.vedaapplication.remote.service.CategoryService
 import com.example.vedaapplication.ui.component.AppBottomBar
@@ -53,19 +51,17 @@ fun HomeScreen(
     navController: NavController
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
     val categoryService = remember { CategoryService() }
     var state by remember { mutableStateOf(HomeState()) }
 
     LaunchedEffect(Unit) {
         try {
             val response = categoryService.getCategories()
-
             val uiCategories = response.mapIndexed { index, item ->
                 val style = getCategoryStyle(index)
                 CategoryUi(
                     id = item.id,
+                    slug = item.slug,
                     title = item.title,
                     description = item.description,
                     cardsCount = item.cardsCount,
@@ -73,23 +69,16 @@ fun HomeScreen(
                     color = style.second
                 )
             }
-
-            state = state.copy(
-                categories = uiCategories,
-                isLoading = false
-            )
+            state = state.copy(categories = uiCategories, isLoading = false)
         } catch (e: Exception) {
-            state = state.copy(
-                isLoading = false,
-                errorMessage = e.localizedMessage ?: "Ошибка загрузки"
-            )
+            state = state.copy(isLoading = false, errorMessage = e.localizedMessage)
         }
     }
 
     Scaffold(
         bottomBar = {
             AppBottomBar(
-                currentRoute = currentRoute,
+                currentRoute = navBackStackEntry?.destination?.route,
                 onNavigate = { route ->
                     navController.navigate(route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -105,7 +94,8 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeader(
@@ -114,22 +104,22 @@ fun HomeScreen(
                 onSearchClick = {}
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 when {
                     state.isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        CircularProgressIndicator()
                     }
 
                     state.errorMessage != null -> {
                         Text(
-                            text = state.errorMessage ?: "Неизвестная ошибка",
-                            color = Color.Red,
+                            text = state.errorMessage ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
 
@@ -137,15 +127,21 @@ fun HomeScreen(
                         Text(
                             text = "Карточек пока нет",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.align(Alignment.Center)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
                         )
                     }
 
                     else -> {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                top = 16.dp,
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 24.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(state.categories) { category ->
                                 CardCategory(
@@ -153,16 +149,9 @@ fun HomeScreen(
                                     description = category.description,
                                     cardCount = category.cardsCount,
                                     icon = category.icon,
-                                    iconColor = category.color
+                                    iconColor = category.color,
+                                    onClick = {}
                                 )
-
-                                if (category != state.categories.last()) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(start = 80.dp, end = 16.dp),
-                                        thickness = 0.5.dp,
-                                        color = Color.LightGray.copy(alpha = 0.5f)
-                                    )
-                                }
                             }
                         }
                     }
@@ -184,10 +173,4 @@ private fun getCategoryStyle(index: Int): Pair<ImageVector, Color> {
         Icons.Default.DateRange to Color(0xFF7986CB)
     )
     return styles[index % styles.size]
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun HomeScreenPreview() {
-    HomeScreen(navController = rememberNavController())
 }

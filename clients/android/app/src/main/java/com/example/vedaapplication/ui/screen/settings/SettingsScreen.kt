@@ -33,17 +33,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.vedaapplication.R
 import com.example.vedaapplication.local.SettingsManager
 import com.example.vedaapplication.local.TokenManager
 import com.example.vedaapplication.remote.model.request.RefreshRequest
-import com.example.vedaapplication.remote.model.response.AccountResponse
 import com.example.vedaapplication.remote.service.AccountService
 import com.example.vedaapplication.remote.service.SessionService
 import com.example.vedaapplication.ui.component.AppBottomBar
@@ -53,6 +50,7 @@ import com.example.vedaapplication.ui.screen.settings.component.LogoutDialog
 import com.example.vedaapplication.ui.screen.settings.component.ProfileCard
 import com.example.vedaapplication.ui.screen.settings.component.SettingsActionItem
 import com.example.vedaapplication.ui.screen.settings.component.SettingsSwitchItem
+import com.example.vedaapplication.ui.screen.settings.state.SettingsState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,42 +60,39 @@ fun SettingsScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     val tokenManager = remember { TokenManager(context) }
     val settingsManager = remember { SettingsManager(context) }
     val sessionService = remember { SessionService() }
     val accountService = remember { AccountService() }
 
-    var profile by remember { mutableStateOf<AccountResponse?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
-    var showLogoutDialog by remember { mutableStateOf(false) }
-
-    var isDarkTheme by remember { mutableStateOf(settingsManager.isDarkTheme()) }
-
-    val currentLangCode = remember { settingsManager.getLanguage() }
-    val currentLangLabel = if (currentLangCode == "ru") "Русский" else "English"
+    var state by remember {
+        mutableStateOf(
+            SettingsState(
+                isDarkTheme = settingsManager.isDarkTheme(),
+                currentLangCode = settingsManager.getLanguage()
+            )
+        )
+    }
 
     LaunchedEffect(Unit) {
         try {
-            profile = accountService.getProfile()
+            val userProfile = accountService.getProfile()
+            state = state.copy(profile = userProfile, isLoading = false)
         } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            isLoading = false
+            state = state.copy(isLoading = false)
         }
     }
 
-    if (showLogoutDialog) {
+    if (state.showLogoutDialog) {
         LogoutDialog(
-            onDismiss = { showLogoutDialog = false },
+            onDismiss = { state = state.copy(showLogoutDialog = false) },
             onConfirm = {
                 scope.launch {
-                    showLogoutDialog = false
+                    state = state.copy(showLogoutDialog = false)
                     try {
-                        val refreshToken = tokenManager.getRefreshToken()
-                        if (refreshToken != null) {
-                            sessionService.logout(RefreshRequest(refreshToken))
+                        tokenManager.getRefreshToken()?.let {
+                            sessionService.logout(RefreshRequest(it))
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -116,7 +111,7 @@ fun SettingsScreen(
     Scaffold(
         bottomBar = {
             AppBottomBar(
-                currentRoute = currentRoute,
+                currentRoute = navBackStackEntry?.destination?.route,
                 onNavigate = { route ->
                     navController.navigate(route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -142,23 +137,18 @@ fun SettingsScreen(
                 onSearchClick = {}
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            if (isLoading) {
+            if (state.isLoading) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp),
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
                 }
             } else {
-                profile?.let { user ->
-                    ProfileCard(
-                        user = user,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                state.profile?.let { user ->
+                    ProfileCard(user = user, modifier = Modifier.padding(horizontal = 16.dp))
                 }
             }
 
@@ -168,9 +158,7 @@ fun SettingsScreen(
                 text = stringResource(R.string.app_settings),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
             )
 
             Card(
@@ -184,9 +172,9 @@ fun SettingsScreen(
                     SettingsSwitchItem(
                         icon = Icons.Default.DarkMode,
                         title = stringResource(R.string.dark_theme),
-                        checked = isDarkTheme,
+                        checked = state.isDarkTheme,
                         onCheckedChange = { isChecked ->
-                            isDarkTheme = isChecked
+                            state = state.copy(isDarkTheme = isChecked)
                             settingsManager.saveThemeMode(isChecked)
                             (context as? Activity)?.recreate()
                         }
@@ -200,9 +188,10 @@ fun SettingsScreen(
                     SettingsActionItem(
                         icon = Icons.Default.Language,
                         title = stringResource(R.string.language),
-                        value = currentLangLabel,
+                        value = state.currentLangLabel,
                         onClick = {
-                            val newLang = if (currentLangCode == "ru") "en" else "ru"
+                            val newLang = if (state.currentLangCode == "ru") "en" else "ru"
+                            state = state.copy(currentLangCode = newLang)
                             settingsManager.saveLanguage(newLang)
                             (context as? Activity)?.recreate()
                         }
@@ -225,15 +214,9 @@ fun SettingsScreen(
                     titleColor = MaterialTheme.colorScheme.error,
                     iconColor = MaterialTheme.colorScheme.error,
                     showArrow = false,
-                    onClick = { showLogoutDialog = true }
+                    onClick = { state = state.copy(showLogoutDialog = true) }
                 )
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingsScreenPreview() {
-    SettingsScreen(navController = rememberNavController())
 }

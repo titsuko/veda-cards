@@ -23,13 +23,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.vedaapplication.ui.theme.ButtonColor
+import com.example.vedaapplication.ui.theme.VedaApplicationTheme
 
 @Composable
 fun AppTextField(
@@ -43,6 +45,11 @@ fun AppTextField(
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val borderColor = MaterialTheme.colorScheme.outline
+    val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val accentColor = ButtonColor
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -50,33 +57,53 @@ fun AppTextField(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
-        visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
+
+        visualTransformation = if (isPassword && !passwordVisible) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        },
+
         keyboardOptions = KeyboardOptions(
             keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
             imeAction = imeAction
         ),
+
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = Color.Gray.copy(alpha = 0.4f),
-            focusedBorderColor = MaterialTheme.colorScheme.primary
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
+
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+
+            cursorColor = accentColor,
+            selectionColors = androidx.compose.foundation.text.selection.TextSelectionColors(
+                handleColor = accentColor,
+                backgroundColor = accentColor.copy(alpha = 0.4f)
+            ),
+
+            focusedLabelColor = labelColor,
+            unfocusedLabelColor = labelColor,
         ),
+
         trailingIcon = {
             if (value.isNotEmpty()) {
-                val icon = if (isPassword) {
-                    if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                val iconImage: ImageVector
+                val onClickAction: () -> Unit
+
+                if (isPassword) {
+                    iconImage = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    onClickAction = { passwordVisible = !passwordVisible }
                 } else {
-                    Icons.Filled.Clear
+                    iconImage = Icons.Filled.Clear
+                    onClickAction = { onValueChange("") }
                 }
-                IconButton(onClick = {
-                    if (isPassword) {
-                        passwordVisible = !passwordVisible
-                    } else {
-                        onValueChange("")
-                    }
-                }) {
+
+                IconButton(onClick = onClickAction) {
                     Icon(
-                        imageVector = icon,
+                        imageVector = iconImage,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
+                        tint = accentColor
                     )
                 }
             }
@@ -87,20 +114,24 @@ fun AppTextField(
 @Preview(showBackground = true)
 @Composable
 private fun AppTextFieldPreview() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        var text by remember { mutableStateOf("some text") }
-        AppTextField(
-            value = text,
-            onValueChange = { text = it },
-            label = "Email"
-        )
-        Spacer(Modifier.height(8.dp))
-        var password by remember { mutableStateOf("password") }
-        AppTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = "Password",
-            isPassword = true
-        )
+    VedaApplicationTheme(darkTheme = true) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            var text by remember { mutableStateOf("test@veda.com") }
+            AppTextField(
+                value = text,
+                onValueChange = { text = it },
+                label = "Email"
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            var password by remember { mutableStateOf("123456") }
+            AppTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Password",
+                isPassword = true
+            )
+        }
     }
 }

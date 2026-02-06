@@ -8,13 +8,10 @@ import com.example.vedaapplication.ui.navigation.Screen
 import com.example.vedaapplication.ui.screen.home.CollectionScreen
 import com.example.vedaapplication.ui.screen.home.HomeScreen
 import com.example.vedaapplication.ui.screen.settings.SettingsScreen
-
-fun NavGraphBuilder.homeNavGraph(
-    navController: NavHostController
-) {
+fun NavGraphBuilder.homeNavGraph(navController: NavHostController) {
     navigation(
-        startDestination = Screen.Home.route,
-        route = Screen.HomeGraph.route
+        route = Screen.HomeGraph.route,
+        startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
