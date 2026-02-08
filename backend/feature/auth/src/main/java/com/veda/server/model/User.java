@@ -20,14 +20,12 @@ public class User {
     private Integer id;
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "crated_at", nullable = false)
-    private Instant cratedAt;
+    private Instant cratedAt = Instant.now();
 
     @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    private Instant updatedAt =  Instant.now();
 
     @NotNull
     @Size(max = 255)

@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, Integer> {
     @Query("""
-      select t from Token t 
+      select t from Token t\s
       where t.user = :user and t.isRevoked = 0
-      """)
+     \s""")
     List<Token> findAllValidTokenByUser(@Param("user") User user);
     Optional<Token> findByToken(String token);
 }

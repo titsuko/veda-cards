@@ -1,78 +1,58 @@
 package com.veda.server.service;
 
 import com.veda.server.HashEncoder;
-import com.veda.server.JwtService;
+import com.veda.server.UserAuthorizedEvent;
 import com.veda.server.dto.request.LoginRequest;
 import com.veda.server.dto.request.RefreshTokenRequest;
 import com.veda.server.dto.response.AuthResponse;
-import com.veda.server.event.UserAuthorizedEvent;
 import com.veda.server.exception.InvalidCredentialsException;
-import com.veda.server.exception.InvalidTokenException;
-import com.veda.server.model.Token;
 import com.veda.server.model.User;
-import com.veda.server.repository.TokenRepository;
 import com.veda.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SessionService {
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
-    private final JwtService jwtService;
-    private final TokenService tokenService;
     private final HashEncoder encoder;
+    private final TokenService tokenService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AuthResponse loginUser(LoginRequest request) {
+        log.info("Login attempt for email: {}", request.email());
+
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(InvalidCredentialsException::new);
+                .orElseThrow(() -> {
+                    log.warn("Login failed: User with email: {} not found", request.email());
+                    return new InvalidCredentialsException();
+                });
 
         if (!encoder.matches(request.password(), user.getPassword())) {
+            log.warn("Login failed: Incorrect password for user: {}", request.email());
             throw new InvalidCredentialsException();
         }
 
-        eventPublisher.publishEvent(new UserAuthorizedEvent(user));
+        log.info("User {} logged in successfully", user.getId());
+        eventPublisher.publishEvent(new UserAuthorizedEvent(
+                user.getId(),
+                Instant.now()
+        ));
 
-        String accessToken = jwtService.generateAccessToken(user.getId().toString());
-        String refreshToken = jwtService.generateRefreshToken(user.getId().toString());
-
-        tokenService.saveRefreshToken(user, refreshToken, jwtService.getRefreshTokenValidityMs());
-
-        return new AuthResponse(refreshToken, accessToken);
+        return tokenService.issueTokens(user);
     }
 
     @Transactional
     public AuthResponse refreshToken(RefreshTokenRequest request) {
-        String incomingRefreshToken = request.token();
-
-        if (!jwtService.validateRefreshToken(incomingRefreshToken)) {
-            throw new InvalidTokenException("Invalid refresh token");
-        }
-
-        Token storedToken = tokenRepository.findByToken(incomingRefreshToken)
-                .orElseThrow(() -> new InvalidTokenException("Token not found"));
-
-        if (storedToken.getIsRevoked() == 1) {
-            throw new InvalidTokenException("Token has been revoked");
-        }
-
-        User user = storedToken.getUser();
-
-        tokenService.revokeRefreshToken(storedToken);
-
-        String newAccessToken = jwtService.generateAccessToken(user.getId().toString());
-        String newRefreshToken = jwtService.generateRefreshToken(user.getId().toString());
-
-        tokenService.saveRefreshToken(user, newRefreshToken, jwtService.getRefreshTokenValidityMs());
-
-        return new AuthResponse(newRefreshToken, newAccessToken);
+        log.debug("SessionService delegating token refresh");
+        return tokenService.refreshTokens(request.token());
     }
 }
