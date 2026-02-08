@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
@@ -20,7 +19,6 @@ public class Card {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Lob
     @Column(name = "description")
     private String description;
 

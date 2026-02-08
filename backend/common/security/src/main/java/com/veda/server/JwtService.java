@@ -16,12 +16,18 @@ import java.util.Date;
 public class JwtService {
 
     private final SecretKey secretKey;
-    private final long accessTokenValidityMs = 15L * 60L * 1000L;
-    private final long refreshTokenValidityMs = 30L * 24L * 60L * 60L * 1000L;
+    private final long accessTokenValidityMs;
+    private final long refreshTokenValidityMs;
 
-    public JwtService(@Value("${jwt.secret}") String jwtSecret) {
+    public JwtService(
+            @Value("${jwt.secret}") String jwtSecret,
+            @Value("${access.validityMs}") long accessTokenValidityMs,
+            @Value("${refresh.validityMs}") long refreshTokenValidityMs
+    ) {
         byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
         this.secretKey = Keys.hmacShaKeyFor(decodedKey);
+        this.accessTokenValidityMs = accessTokenValidityMs;
+        this.refreshTokenValidityMs = refreshTokenValidityMs;
     }
 
     public String generateAccessToken(String userId) {
@@ -54,10 +60,6 @@ public class JwtService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
         }
         return claims.getSubject();
-    }
-
-    public long getAccessTokenValidityMs() {
-        return accessTokenValidityMs;
     }
 
     public long getRefreshTokenValidityMs() {
