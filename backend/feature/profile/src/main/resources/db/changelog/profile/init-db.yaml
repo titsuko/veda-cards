@@ -45,7 +45,7 @@ databaseChangeLog:
             tableName: user_settings
             columns:
               - column:
-                  name: id
+                  name: setting_id
                   type: int
                   autoIncrement: true
                   constraints:
