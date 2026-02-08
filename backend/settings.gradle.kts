@@ -1,12 +1,11 @@
-rootProject.name = "veda-server"
+rootProject.name = "backend"
 
 include(
-    ":app",
-    ":common",
-    ":feature:admin",
-    ":feature:health",
-    ":feature:identity:identity-api",
-    ":feature:identity:identity-domain",
-    ":feature:cards:cards-api",
-    ":feature:cards:cards-domain"
+    "bootstrap",
+    ":common:event",
+    ":common:security",
+    ":common:exception",
+    ":feature:profile",
+    ":feature:auth",
+    ":feature:card"
 )

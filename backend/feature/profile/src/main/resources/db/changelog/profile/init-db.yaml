@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-profile
+      author: titsuko
+      changes:
+        - createTable:
+            tableName: profiles
+            columns:
+              - column:
+                  name: profile_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bio
+                  type: varchar(255)
+              - column:
+                  name: last_login_at
+                  type: datetime
+              - column:
+                  name: created_at
+                  type: datetime
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: user_settings
+            columns:
+              - column:
+                  name: setting_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: theme
+                  type: varchar(20)
+                  defaultValue: 'LIGHT'
+              - column:
+                  name: lang
+                  type: varchar(2)
+                  defaultValue: 'ru'

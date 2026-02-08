@@ -1,13 +1,12 @@
 plugins {
-    id("org.springframework.boot") version "4.0.2"
-    id("io.spring.dependency-management") version "1.1.7"
-    kotlin("jvm") version "2.3.0"
-    kotlin("plugin.spring") version "2.3.0"
-    kotlin("plugin.jpa") version "2.3.0" apply false
+	java
+	id("org.springframework.boot") version "4.0.2"
+	id("io.spring.dependency-management") version "1.1.7"
 }
 
+
 allprojects {
-    group = "com.titsuko"
+    group = "com.veda"
     version = "0.0.1-SNAPSHOT"
 
     repositories {
@@ -16,21 +15,21 @@ allprojects {
 }
 
 subprojects {
-    tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-        enabled = false
+    apply(plugin = "java")
+    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "org.springframework.boot")
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 }
 
-tasks.bootJar {
-    enabled = true
-}
-
-tasks.jar {
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     enabled = false
-}
-
-subprojects {
-    tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
-        enabled = false
-    }
 }
