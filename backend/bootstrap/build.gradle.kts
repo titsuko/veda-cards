@@ -7,4 +7,5 @@ dependencies {
 
     implementation(project(":feature:auth"))
     implementation(project(":feature:profile"))
+    implementation(project(":feature:card"))
 }

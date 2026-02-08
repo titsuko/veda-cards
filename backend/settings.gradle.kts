@@ -1,8 +1,11 @@
 rootProject.name = "backend"
 
-include("bootstrap")
-include(":feature:auth")
-include(":common:security")
-include(":common:exception")
-include("feature:profile")
-include("common:event")
+include(
+    "bootstrap",
+    ":common:event",
+    ":common:security",
+    ":common:exception",
+    ":feature:profile",
+    ":feature:auth",
+    ":feature:card"
+)
