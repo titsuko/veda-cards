@@ -5,9 +5,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     annotationProcessor("org.projectlombok:lombok")
     compileOnly("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     // common library:
+    implementation(project(":common:event"))
     implementation(project(":common:security"))
     implementation(project(":common:exception"))
 }

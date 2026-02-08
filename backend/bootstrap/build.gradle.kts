@@ -6,4 +6,5 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
 
     implementation(project(":feature:auth"))
+    implementation(project(":feature:profile"))
 }
