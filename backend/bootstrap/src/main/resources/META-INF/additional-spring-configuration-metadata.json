@@ -1,0 +1,21 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Base64 encoded secret key."
+    },
+    {
+      "name": "access.validityMs",
+      "type": "java.lang.Long",
+      "description": "Expiration time for Access Tokens in milliseconds.",
+      "defaultValue": 3600000
+    },
+    {
+      "name": "refresh.validityMs",
+      "type": "java.lang.Long",
+      "description": "Expiration time for Refresh Tokens in milliseconds.",
+      "defaultValue": 86400000
+    }
+  ]
+}
