@@ -2,5 +2,6 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <include file="db/changelog/auth/init-db.yaml"/>
+    <include file="db/changelog/profile/init-db.yaml"/>
 
 </databaseChangeLog>
